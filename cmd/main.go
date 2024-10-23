@@ -28,7 +28,10 @@ func main() {
 	pollingService.StartPolling(1 * time.Second)
 
 	portController := controllers.NewPortController(pollingService)
-	consoleMenu := cli.NewConsoleMenu(portController)
 
-	consoleMenu.DisplayMenu()
+	menu := cli.NewMenuBuilder("Главное меню").
+		AddAction("Показать информацию о портах", portController.ShowPortStats).
+		Build()
+
+	menu.Execute()
 }
