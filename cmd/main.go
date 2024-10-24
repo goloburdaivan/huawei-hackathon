@@ -30,10 +30,12 @@ func main() {
 
 	portController := controllers.NewPortController(pollingService)
 	exportController := controllers.NewExportController(exportService, pollingService)
+	sshController := controllers.NewSSHController("192.168.10.2", "22", "username", "password")
 
 	menu := cli.NewMenuBuilder("Главное меню").
 		AddAction("Показать информацию о портах", portController.ShowPortStats).
 		AddAction("Экспортировать статистику портов в CSV", exportController.ExportPortStats).
+		AddAction("Открыть SSH-сессию", sshController.StartSSHSession).
 		Build()
 
 	menu.Execute()
