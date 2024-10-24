@@ -26,12 +26,14 @@ func main() {
 
 	pollingService := services.NewPollingService(snmpService)
 	pollingService.StartPolling(1 * time.Second)
+	exportService := services.NewExportService()
 
 	portController := controllers.NewPortController(pollingService)
+	exportController := controllers.NewExportController(exportService, pollingService)
 
 	menu := cli.NewMenuBuilder("Главное меню").
 		AddAction("Показать информацию о портах", portController.ShowPortStats).
-		AddAction("Экспортировать статистику портов в CSV", portController.ExportPortStatsToCSV).
+		AddAction("Экспортировать статистику портов в CSV", exportController.ExportPortStats).
 		Build()
 
 	menu.Execute()
