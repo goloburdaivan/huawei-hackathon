@@ -31,6 +31,7 @@ func main() {
 
 	menu := cli.NewMenuBuilder("Главное меню").
 		AddAction("Показать информацию о портах", portController.ShowPortStats).
+		AddAction("Экспортировать статистику портов в CSV", portController.ExportPortStatsToCSV).
 		Build()
 
 	menu.Execute()
