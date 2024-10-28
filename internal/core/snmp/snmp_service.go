@@ -12,37 +12,41 @@ type SnmpService struct {
 	Port       uint16
 	Community  string
 	connection *gosnmp.GoSNMP
-	PortStats  []structs.PortInfo
+	portStats  []structs.PortInfo
 }
 
 func (s *SnmpService) PollStatistics() error {
 	s.pollPortsStatuses()
 
-	for i := range s.PortStats {
-		inOctets, _ := getInOctets(s.connection, s.PortStats[i].Index)
-		outOctets, _ := getOutOctets(s.connection, s.PortStats[i].Index)
-		inErrors, _ := getInErrors(s.connection, s.PortStats[i].Index)
-		outErrors, _ := getOutErrors(s.connection, s.PortStats[i].Index)
-		inUnicast, _ := getInUnicastPackets(s.connection, s.PortStats[i].Index)
-		outUnicast, _ := getOutUnicastPackets(s.connection, s.PortStats[i].Index)
-		inMulticast, _ := getInMulticastPackets(s.connection, s.PortStats[i].Index)
-		outMulticast, _ := getOutMulticastPackets(s.connection, s.PortStats[i].Index)
-		inBroadcast, _ := getInBroadcastPackets(s.connection, s.PortStats[i].Index)
-		outBroadcast, _ := getOutBroadcastPackets(s.connection, s.PortStats[i].Index)
+	for i := range s.portStats {
+		inOctets, _ := getInOctets(s.connection, s.portStats[i].Index)
+		outOctets, _ := getOutOctets(s.connection, s.portStats[i].Index)
+		inErrors, _ := getInErrors(s.connection, s.portStats[i].Index)
+		outErrors, _ := getOutErrors(s.connection, s.portStats[i].Index)
+		inUnicast, _ := getInUnicastPackets(s.connection, s.portStats[i].Index)
+		outUnicast, _ := getOutUnicastPackets(s.connection, s.portStats[i].Index)
+		inMulticast, _ := getInMulticastPackets(s.connection, s.portStats[i].Index)
+		outMulticast, _ := getOutMulticastPackets(s.connection, s.portStats[i].Index)
+		inBroadcast, _ := getInBroadcastPackets(s.connection, s.portStats[i].Index)
+		outBroadcast, _ := getOutBroadcastPackets(s.connection, s.portStats[i].Index)
 
-		s.PortStats[i].InOctets = inOctets
-		s.PortStats[i].OutOctets = outOctets
-		s.PortStats[i].InErrors = inErrors
-		s.PortStats[i].OutErrors = outErrors
-		s.PortStats[i].InUcastPkts = inUnicast
-		s.PortStats[i].OutUcastPkts = outUnicast
-		s.PortStats[i].InMulticastPkts = inMulticast
-		s.PortStats[i].OutMulticastPkts = outMulticast
-		s.PortStats[i].InBroadcastPkts = inBroadcast
-		s.PortStats[i].OutBroadcastPkts = outBroadcast
+		s.portStats[i].InOctets = inOctets
+		s.portStats[i].OutOctets = outOctets
+		s.portStats[i].InErrors = inErrors
+		s.portStats[i].OutErrors = outErrors
+		s.portStats[i].InUcastPkts = inUnicast
+		s.portStats[i].OutUcastPkts = outUnicast
+		s.portStats[i].InMulticastPkts = inMulticast
+		s.portStats[i].OutMulticastPkts = outMulticast
+		s.portStats[i].InBroadcastPkts = inBroadcast
+		s.portStats[i].OutBroadcastPkts = outBroadcast
 	}
 
 	return nil
+}
+
+func (s *SnmpService) GetPortStats() []structs.PortInfo {
+	return s.portStats
 }
 
 func (s *SnmpService) Connect() error {
@@ -50,7 +54,7 @@ func (s *SnmpService) Connect() error {
 }
 
 func (s *SnmpService) FetchPorts() error {
-	s.PortStats = []structs.PortInfo{}
+	s.portStats = []structs.PortInfo{}
 	indexes, err := getPortsIndexes(s.connection)
 	if err != nil {
 		fmt.Println(err)
@@ -62,7 +66,7 @@ func (s *SnmpService) FetchPorts() error {
 		return nil
 	}
 
-	s.PortStats = initPorts(indexes, descriptions)
+	s.portStats = initPorts(indexes, descriptions)
 
 	return nil
 }
@@ -94,9 +98,9 @@ func (s *SnmpService) pollPortsStatuses() {
 	adminStatuses, _ := getAdminStatuses(s.connection)
 	operStatuses, _ := getOperStatuses(s.connection)
 
-	for i := range s.PortStats {
-		s.PortStats[i].AdminStatus = getStatusLabel(adminStatuses[i].Value.(int))
-		s.PortStats[i].OperStatus = getStatusLabel(operStatuses[i].Value.(int))
+	for i := range s.portStats {
+		s.portStats[i].AdminStatus = getStatusLabel(adminStatuses[i].Value.(int))
+		s.portStats[i].OperStatus = getStatusLabel(operStatuses[i].Value.(int))
 	}
 }
 

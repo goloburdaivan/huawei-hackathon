@@ -16,4 +16,8 @@ type PortInfo struct {
 	OutBroadcastPkts uint
 	AdminStatus      string
 	OperStatus       string
+	InOctetsPkts     uint
+	OutOctetsPkts    uint
+	InBandwidthUtil  uint
+	OutBandwidthUtil uint
 }
