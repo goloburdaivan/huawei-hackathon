@@ -10,6 +10,7 @@ import (
 )
 
 func main() {
+
 	snmpService := snmp.NewSnmpService("192.168.10.2", 161, "public")
 	defer snmpService.CloseConnection()
 	err := snmpService.Connect()
@@ -31,6 +32,7 @@ func main() {
 
 	menu := cli.NewMenuBuilder("Главное меню").
 		AddAction("Показать информацию о портах", portController.ShowPortStats).
+		AddAction("Показать график для портов", portController.ShowPortGraph).
 		Build()
 
 	menu.Execute()
