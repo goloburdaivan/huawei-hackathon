@@ -4,9 +4,6 @@ import (
 	"Hackathon/internal/services"
 	"Hackathon/internal/views"
 	"fmt"
-	ui "github.com/gizak/termui/v3"
-	"github.com/gizak/termui/v3/widgets"
-	"time"
 )
 
 type PortController struct {
@@ -41,66 +38,54 @@ func (pc *PortController) ShowPortStats() {
 }
 
 func (pc *PortController) ShowPortGraph() {
-	if err := ui.Init(); err != nil {
-		fmt.Printf("failed to initialize termui: %v\n", err)
+	portIndex := pc.promptPortIndex()
+
+	if portIndex == -1 {
+		fmt.Println("Возвращаемся в меню...")
 		return
 	}
-	defer ui.Close()
 
-	plot := widgets.NewPlot()
-	plot.Title = "Port Status (UP = 1, DOWN = 0)"
-	plot.Data = [][]float64{{}}
-	plot.SetRect(0, 0, 110, 10)
-	plot.AxesColor = ui.ColorWhite
-	plot.Marker = widgets.MarkerBraille
-	plot.HorizontalScale = 1
+	portStats := pc.pollingService.GetPortStats()
+	if portIndex < 0 || portIndex >= len(portStats) {
+		fmt.Printf("Порт с индексом %d не существует.\n", portIndex)
+		return
+	}
 
-	plot.Data[0] = append(plot.Data[0], 0)
+	portName := portStats[portIndex].Name
 
-	ticker := time.NewTicker(1 * time.Second)
-	defer ticker.Stop()
-
-	uiEvents := ui.PollEvents()
-
-	go func() {
-		for {
-			select {
-			case <-ticker.C:
-				var status float64
-				portStats := pc.pollingService.GetPortStats()[6]
-				if portStats.OperStatus == "UP" {
-					status = 1
-					plot.LineColors[0] = ui.ColorGreen
-				} else {
-					status = 0
-					plot.LineColors[0] = ui.ColorRed
-				}
-
-				if len(plot.Data[0]) > 100 {
-					plot.Data[0] = plot.Data[0][1:]
-				}
-
-				plot.Data[0] = append(plot.Data[0], status)
-
-				currentTime := time.Now().Format("15:04:05")
-				plot.Title = fmt.Sprintf("Port Status (UP = 1, DOWN = 0) - Time: %s", currentTime)
-
-				ui.Render(plot)
-
-			case e := <-uiEvents:
-				if e.ID == "q" || e.ID == "<Enter>" {
-					pc.stopChannel <- true
-					return
-				}
-			}
+	// Функция для получения статуса порта (0 или 1)
+	getStatus := func() float64 {
+		portStats := pc.pollingService.GetPortStats()
+		if portStats[portIndex].OperStatus == "UP" {
+			return 1
 		}
-	}()
+		return 0
+	}
 
+	views.DisplayPortGraph(portName, portIndex, getStatus, pc.stopChannel)
+	fmt.Println("Возвращаемся в меню...")
+}
+
+func (pc *PortController) promptPortIndex() int {
 	for {
-		select {
-		case <-pc.stopChannel:
-			fmt.Println("Возвращаемся в меню...")
-			return
+		var portIndex int
+		fmt.Println("Введите индекс порта для отображения графика (введите -1 для возврата в меню):")
+
+		_, err := fmt.Scanln(&portIndex)
+		if err != nil {
+			fmt.Println("Ошибка ввода, пожалуйста, введите корректный индекс или -1 для возврата в меню.")
+			continue
 		}
+
+		if portIndex == -1 {
+			return -1
+		}
+
+		portStats := pc.pollingService.GetPortStats()
+		if portIndex >= 0 && portIndex < len(portStats) {
+			return portIndex
+		}
+
+		fmt.Printf("Порт с индексом %d не найден. Попробуйте снова или введите -1 для возврата в меню.\n", portIndex)
 	}
 }
