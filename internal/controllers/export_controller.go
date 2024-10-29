@@ -23,12 +23,12 @@ func (ec *ExportController) ExportPortStats() {
 }
 
 func (ec *ExportController) ExportPortStatsByPort() {
-	var portName string
+	var portIndex int
 	fmt.Print("Введите название порта для экспорта: ")
-	fmt.Scanln(&portName)
+	fmt.Scanln(&portIndex)
 
 	go func() {
 		portStats := ec.pollingService.GetPortStats()
-		ec.exportService.ExportPortStatsByPort(portStats, portName)
+		ec.exportService.ExportPortStatsByIndex(portStats, portIndex)
 	}()
 }

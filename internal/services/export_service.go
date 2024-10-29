@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"os"
 	"strconv"
-	"strings"
 	"time"
 )
 
@@ -68,15 +67,13 @@ func (es *ExportService) ExportPortStatsToCSV(portStats []structs.PortInfo) {
 	fmt.Println("Данные успешно экспортированы в \n", fileName)
 }
 
-func (es *ExportService) ExportPortStatsByPort(portStats []structs.PortInfo, portName string) {
-	portName = strings.ToLower(portName)
-
-	for _, stat := range portStats {
-		if strings.ToLower(stat.Name) == portName {
-			fmt.Println("Экспортируем данные для порта:", portName)
-			es.ExportPortStatsToCSV([]structs.PortInfo{stat})
-			return
-		}
+func (es *ExportService) ExportPortStatsByIndex(portStats []structs.PortInfo, portIndex int) {
+	if portIndex < 0 || portIndex >= len(portStats) {
+		fmt.Println("Порт с индексом", portIndex, "не найден")
+		return
 	}
-	fmt.Println("Порт с именем", portName, "не найден")
+	
+	portInfo := portStats[portIndex]
+	fmt.Println("Экспортируем данные для порта с индексом:", portIndex)
+	es.ExportPortStatsToCSV([]structs.PortInfo{portInfo})
 }
