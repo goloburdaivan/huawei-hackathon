@@ -72,7 +72,7 @@ func (es *ExportService) ExportPortStatsByIndex(portStats []structs.PortInfo, po
 		fmt.Println("Порт с индексом", portIndex, "не найден")
 		return
 	}
-	
+
 	portInfo := portStats[portIndex]
 	fmt.Println("Экспортируем данные для порта с индексом:", portIndex)
 	es.ExportPortStatsToCSV([]structs.PortInfo{portInfo})
