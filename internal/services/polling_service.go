@@ -42,3 +42,9 @@ func (p *PollingService) GetPortStats() []structs.PortInfo {
 	defer p.mu.RUnlock()
 	return p.portStats
 }
+
+func (p *PollingService) IsValidPortIndex(index int) bool {
+	p.mu.RLock()
+	defer p.mu.RUnlock()
+	return index >= 0 && index < len(p.portStats)
+}
