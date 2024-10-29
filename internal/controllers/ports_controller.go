@@ -3,6 +3,7 @@ package controllers
 import (
 	"Hackathon/internal/services"
 	"Hackathon/internal/views"
+	"errors"
 	"fmt"
 )
 
@@ -38,35 +39,27 @@ func (pc *PortController) ShowPortStats() {
 }
 
 func (pc *PortController) ShowPortGraph() {
-	portIndex := pc.promptPortIndex()
-
-	if portIndex == -1 {
+	portIndex, err := pc.getPortIndex()
+	if err != nil {
+		fmt.Println(err)
 		fmt.Println("Возвращаемся в меню...")
 		return
 	}
 
-	portStats := pc.pollingService.GetPortStats()
-	if portIndex < 0 || portIndex >= len(portStats) {
-		fmt.Printf("Порт с индексом %d не существует.\n", portIndex)
+	portName, err := pc.pollingService.GetPortName(portIndex)
+	if err != nil {
+		fmt.Println(err)
 		return
 	}
-
-	portName := portStats[portIndex].Name
-
-	// Функция для получения статуса порта (0 или 1)
 	getStatus := func() float64 {
-		portStats := pc.pollingService.GetPortStats()
-		if portStats[portIndex].OperStatus == "UP" {
-			return 1
-		}
-		return 0
+		return pc.pollingService.GetPortStatus(portIndex)
 	}
 
 	views.DisplayPortGraph(portName, portIndex, getStatus, pc.stopChannel)
 	fmt.Println("Возвращаемся в меню...")
 }
 
-func (pc *PortController) promptPortIndex() int {
+func (pc *PortController) getPortIndex() (int, error) {
 	for {
 		var portIndex int
 		fmt.Println("Введите индекс порта для отображения графика (введите -1 для возврата в меню):")
@@ -78,12 +71,11 @@ func (pc *PortController) promptPortIndex() int {
 		}
 
 		if portIndex == -1 {
-			return -1
+			return -1, errors.New("отмена: возврат в меню")
 		}
 
-		portStats := pc.pollingService.GetPortStats()
-		if portIndex >= 0 && portIndex < len(portStats) {
-			return portIndex
+		if pc.pollingService.IsValidPortIndex(portIndex) {
+			return portIndex, nil
 		}
 
 		fmt.Printf("Порт с индексом %d не найден. Попробуйте снова или введите -1 для возврата в меню.\n", portIndex)

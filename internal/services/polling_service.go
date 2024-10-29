@@ -42,3 +42,30 @@ func (p *PollingService) GetPortStats() []structs.PortInfo {
 	defer p.mu.RUnlock()
 	return p.portStats
 }
+
+func (p *PollingService) IsValidPortIndex(index int) bool {
+	p.mu.RLock()
+	defer p.mu.RUnlock()
+	return index >= 0 && index < len(p.portStats)
+}
+
+func (p *PollingService) GetPortName(index int) (string, error) {
+	p.mu.RLock()
+	defer p.mu.RUnlock()
+	if !p.IsValidPortIndex(index) {
+		return "", fmt.Errorf("порт с индексом %d не существует", index)
+	}
+	return p.portStats[index].Name, nil
+}
+
+func (p *PollingService) GetPortStatus(index int) float64 {
+	p.mu.RLock()
+	defer p.mu.RUnlock()
+	if !p.IsValidPortIndex(index) {
+		return 0
+	}
+	if p.portStats[index].OperStatus == "UP" {
+		return 1
+	}
+	return 0
+}

@@ -40,7 +40,7 @@ func DisplayPortGraph(portName string, portIndex int, getStatus func() float64, 
 	}()
 
 	<-stopChannel
-	ClearConsole()
+	clearConsole()
 }
 
 func initializePlot(baseTitle string) *widgets.Plot {

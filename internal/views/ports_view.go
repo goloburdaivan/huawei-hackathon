@@ -11,7 +11,7 @@ import (
 )
 
 func DisplayPortStats(portStats []structs.PortInfo) {
-	ClearConsole()
+	clearConsole()
 
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeader([]string{
@@ -46,7 +46,7 @@ func DisplayPortStats(portStats []structs.PortInfo) {
 	time.Sleep(500 * time.Millisecond)
 }
 
-func ClearConsole() {
+func clearConsole() {
 	switch runtime.GOOS {
 	case "windows":
 		cmd := exec.Command("cmd", "/c", "cls")
