@@ -10,3 +10,10 @@ func getStatusLabel(status int) string {
 		return "UNKNOWN"
 	}
 }
+
+func GetPortStatus(operStatus string) float64 {
+	if operStatus == "UP" {
+		return 1
+	}
+	return 0
+}

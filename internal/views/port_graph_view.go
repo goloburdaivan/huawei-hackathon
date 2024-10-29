@@ -1,13 +1,14 @@
 package views
 
 import (
+	"Hackathon/internal/core/snmp"
 	"fmt"
 	ui "github.com/gizak/termui/v3"
 	"github.com/gizak/termui/v3/widgets"
 	"time"
 )
 
-func DisplayPortGraph(portName string, portIndex int, getStatus func() float64, stopChannel chan bool) {
+func DisplayPortGraph(portName string, portIndex int, operStatus string, stopChannel chan bool) {
 	if err := ui.Init(); err != nil {
 		fmt.Printf("Failed to initialize termui: %v\n", err)
 		return
@@ -27,7 +28,7 @@ func DisplayPortGraph(portName string, portIndex int, getStatus func() float64, 
 			select {
 			case <-ticker.C:
 				currentTime := time.Now().Format("15:04:05")
-				updatePlotData(plot, getStatus(), baseTitle, currentTime)
+				updatePlotData(plot, snmp.GetPortStatus(operStatus), baseTitle, currentTime)
 				ui.Render(plot)
 
 			case e := <-uiEvents:
