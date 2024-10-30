@@ -64,8 +64,8 @@ func (pc *PortController) ShowPort() {
 		fmt.Println("Возвращаемся в меню...")
 		return
 	}
-	portStat := pc.pollingService.GetPortStats()[portIndex]
-	views.DisplaySinglePortStats(&portStat)
+	portStat := pc.pollingService.GetPortStats()
+	views.DisplaySinglePortStats(&portStat[portIndex])
 
 	fmt.Println("Возвращаемся в меню...")
 }

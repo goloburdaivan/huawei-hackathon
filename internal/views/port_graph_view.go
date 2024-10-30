@@ -2,28 +2,11 @@ package views
 
 import (
 	"Hackathon/internal/core/snmp"
-	"Hackathon/internal/core/structs"
 	"fmt"
 	ui "github.com/gizak/termui/v3"
 	"github.com/gizak/termui/v3/widgets"
 	"time"
 )
-
-func DisplayPortList(portStats []structs.PortInfo) {
-	clearConsole()
-	header := "| INDEX |         NAME          |"
-	divider := "+-------+-----------------------+"
-
-	fmt.Println(divider)
-	fmt.Println(header)
-	fmt.Println(divider)
-	for _, port := range portStats {
-		row := fmt.Sprintf("| %-5d | %-21s |", port.Index, port.Name)
-		fmt.Println(row)
-	}
-
-	fmt.Println(divider)
-}
 
 func DisplayPortGraph(portName string, portIndex int, operStatus string, stopChannel chan bool) {
 	if err := ui.Init(); err != nil {
