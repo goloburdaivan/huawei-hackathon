@@ -37,8 +37,13 @@ func main() {
 
 	menu := cli.NewMenuBuilder("Главное меню").
 		AddAction("Показать информацию о портах", portController.ShowPortStats).
-		AddAction("Показать график статуса порта", portController.ShowPortGraph).
-		AddAction("Экспортировать статистику портов в CSV", exportController.ExportPortStats).
+		AddSubMenu("Выберите какую информацию вы хотите вывести:").
+		AddAction("Экспортировать информацию о всех портах", exportController.ExportPortStats).
+		AddAction("Экспортировать информацию конкретного порта", exportController.ExportPortStatsByPort).
+		EndSubMenu().
+		AddAction("Показать график для портов", portController.ShowPortGraph).
+		AddAction("Вывести информацию по определённому порту", portController.ShowPort).
 		Build()
+
 	menu.Execute()
 }

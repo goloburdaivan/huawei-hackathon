@@ -51,7 +51,21 @@ func (pc *PortController) ShowPortGraph() {
 
 	portName := portStats[portIndex].Name
 	portStatus := portStats[portIndex].OperStatus
+
 	views.DisplayPortGraph(portName, portIndex, portStatus, pc.stopChannel)
+
+	fmt.Println("Возвращаемся в меню...")
+}
+
+func (pc *PortController) ShowPort() {
+	portIndex, err := pc.getPortIndex()
+	if err != nil {
+		fmt.Println(err)
+		fmt.Println("Возвращаемся в меню...")
+		return
+	}
+	portStat := pc.pollingService.GetPortStats()[portIndex]
+	views.DisplaySinglePortStats(&portStat)
 
 	fmt.Println("Возвращаемся в меню...")
 }

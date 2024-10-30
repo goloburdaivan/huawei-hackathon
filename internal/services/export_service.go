@@ -4,9 +4,9 @@ import (
 	"Hackathon/internal/core/structs"
 	"encoding/csv"
 	"fmt"
-	"log"
 	"os"
 	"strconv"
+	"time"
 )
 
 type ExportService struct{}
@@ -16,9 +16,12 @@ func NewExportService() *ExportService {
 }
 
 func (es *ExportService) ExportPortStatsToCSV(portStats []structs.PortInfo) {
-	file, err := os.Create("exportdata.csv")
+	currentTime := time.Now().Format("20060102_150405")
+	fileName := fmt.Sprintf("exportdata_%s.csv", currentTime)
+	file, err := os.Create(fileName)
+
 	if err != nil {
-		log.Println("Не удалось создать файл:", err)
+		fmt.Println("Не удалось создать файл:", err)
 		return
 	}
 	defer file.Close()
@@ -33,7 +36,7 @@ func (es *ExportService) ExportPortStatsToCSV(portStats []structs.PortInfo) {
 		"OutBroadcastPkts", "AdminStatus", "OperStatus",
 	})
 	if err != nil {
-		log.Println("Не удалось записать заголовки в файл:", err)
+		fmt.Println("Не удалось записать заголовки в файл:", err)
 		return
 	}
 
@@ -57,9 +60,20 @@ func (es *ExportService) ExportPortStatsToCSV(portStats []structs.PortInfo) {
 		}
 		err := writer.Write(record)
 		if err != nil {
-			log.Println("Не удалось записать данные в файл:", err)
+			fmt.Println("Не удалось записать данные в файл:", err)
 			return
 		}
 	}
-	fmt.Println("Данные успешно экспортированы в exportdata.csv")
+	fmt.Println("Данные успешно экспортированы в \n", fileName)
+}
+
+func (es *ExportService) ExportPortStatsByIndex(portStats []structs.PortInfo, portIndex int) {
+	if portIndex < 0 || portIndex >= len(portStats) {
+		fmt.Println("Порт с индексом", portIndex, "не найден")
+		return
+	}
+
+	portInfo := portStats[portIndex]
+	fmt.Println("Экспортируем данные для порта с индексом:", portIndex)
+	es.ExportPortStatsToCSV([]structs.PortInfo{portInfo})
 }

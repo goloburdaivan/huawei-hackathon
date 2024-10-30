@@ -46,6 +46,26 @@ func DisplayPortStats(portStats []structs.PortInfo) {
 	time.Sleep(500 * time.Millisecond)
 }
 
+func DisplaySinglePortStats(portStat *structs.PortInfo) {
+	fmt.Printf("%-20s: %v\n", "Id", portStat.Index)
+	fmt.Printf("%-20s: %v\n", "Name", portStat.Name)
+	fmt.Printf("%-20s: %v\n", "OID", portStat.OID)
+	fmt.Printf("%-20s: %v\n", "InOctets", portStat.InOctets)
+	fmt.Printf("%-20s: %v\n", "OutOctets", portStat.OutOctets)
+	fmt.Printf("%-20s: %v\n", "InErrors", portStat.InErrors)
+	fmt.Printf("%-20s: %v\n", "OutErrors", portStat.OutErrors)
+	fmt.Printf("%-20s: %v\n", "InUcastPkts", portStat.InUcastPkts)
+	fmt.Printf("%-20s: %v\n", "OutUcastPkts", portStat.OutUcastPkts)
+	fmt.Printf("%-20s: %v\n", "InMulticastPkts", portStat.InMulticastPkts)
+	fmt.Printf("%-20s: %v\n", "OutMulticastPkts", portStat.OutMulticastPkts)
+	fmt.Printf("%-20s: %v\n", "InBroadcastPkts", portStat.InBroadcastPkts)
+	fmt.Printf("%-20s: %v\n", "OutBroadcastPkts", portStat.OutBroadcastPkts)
+	fmt.Printf("%-20s: %v\n", "InOctetsPkts", portStat.InOctetsPkts)
+	fmt.Printf("%-20s: %v\n", "OutOctetsPkts", portStat.OutOctetsPkts)
+	fmt.Printf("%-20s: %v\n", "InBandwidthUtil", portStat.InBandwidthUtil)
+	fmt.Printf("%-20s: %v\n", "OutBandwidthUtil", portStat.OutBandwidthUtil)
+}
+
 func clearConsole() {
 	switch runtime.GOOS {
 	case "windows":
