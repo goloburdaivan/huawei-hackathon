@@ -55,6 +55,19 @@ func (pc *PortController) ShowPortGraph() {
 	fmt.Println("Возвращаемся в меню...")
 }
 
+func (pc *PortController) ShowPort() {
+	portIndex, err := pc.getPortIndex()
+	if err != nil {
+		fmt.Println(err)
+		fmt.Println("Возвращаемся в меню...")
+		return
+	}
+	portStat := pc.pollingService.GetPortStats()[portIndex]
+	views.DisplaySinglePortStats(&portStat)
+
+	fmt.Println("Возвращаемся в меню...")
+}
+
 func (pc *PortController) getPortIndex() (int, error) {
 	for {
 		var portIndex int

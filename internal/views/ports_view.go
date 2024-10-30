@@ -46,6 +46,46 @@ func DisplayPortStats(portStats []structs.PortInfo) {
 	time.Sleep(500 * time.Millisecond)
 }
 
+func DisplaySinglePortStats(portStat *structs.PortInfo) {
+	fmt.Printf("%-10s %-20s %-10s %-10s %-10s %-10s %-10s %-10s %-10s %-10s %-10s %-10s %-10s %-10s %-10s %-10s\n",
+		"Index",
+		"Name",
+		"OID",
+		"InOctets",
+		"OutOctets",
+		"InErrors",
+		"OutErrors",
+		"InUcastPkts",
+		"OutUcastPkts",
+		"InMulticast",
+		"OutMulticast",
+		"InBroadcast",
+		"OutBroadcast",
+		"InOctetsPkts",
+		"OutOctetsPkts",
+		"InBWUtil",
+		"OutBWUtil")
+
+	fmt.Printf("%-10d %-20s %-10s %-10d %-10d %-10d %-10d %-10d %-10d %-10d %-10d %-10d %-10d %-10d %-10d %-10.2f %-10.2f\n",
+		portStat.Index,
+		portStat.Name,
+		portStat.OID,
+		portStat.InOctets,
+		portStat.OutOctets,
+		portStat.InErrors,
+		portStat.OutErrors,
+		portStat.InUcastPkts,
+		portStat.OutUcastPkts,
+		portStat.InMulticastPkts,
+		portStat.OutMulticastPkts,
+		portStat.InBroadcastPkts,
+		portStat.OutBroadcastPkts,
+		portStat.InOctetsPkts,
+		portStat.OutOctetsPkts,
+		portStat.InBandwidthUtil,
+		portStat.OutBandwidthUtil)
+}
+
 func clearConsole() {
 	switch runtime.GOOS {
 	case "windows":

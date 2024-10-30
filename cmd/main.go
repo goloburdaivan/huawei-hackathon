@@ -42,6 +42,7 @@ func main() {
 		AddAction("Экспортировать информацию конкретного порта", exportController.ExportPortStatsByPort).
 		EndSubMenu().
 		AddAction("Показать график для портов", portController.ShowPortGraph).
+		AddAction("Вывести информацию по определённому порту", portController.ShowPort).
 		Build()
 
 	menu.Execute()
