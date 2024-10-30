@@ -47,43 +47,23 @@ func DisplayPortStats(portStats []structs.PortInfo) {
 }
 
 func DisplaySinglePortStats(portStat *structs.PortInfo) {
-	fmt.Printf("%-10s %-20s %-10s %-10s %-10s %-10s %-10s %-10s %-10s %-10s %-10s %-10s %-10s %-10s %-10s %-10s\n",
-		"Index",
-		"Name",
-		"OID",
-		"InOctets",
-		"OutOctets",
-		"InErrors",
-		"OutErrors",
-		"InUcastPkts",
-		"OutUcastPkts",
-		"InMulticast",
-		"OutMulticast",
-		"InBroadcast",
-		"OutBroadcast",
-		"InOctetsPkts",
-		"OutOctetsPkts",
-		"InBWUtil",
-		"OutBWUtil")
-
-	fmt.Printf("%-10d %-20s %-10s %-10d %-10d %-10d %-10d %-10d %-10d %-10d %-10d %-10d %-10d %-10d %-10d %-10.2f %-10.2f\n",
-		portStat.Index,
-		portStat.Name,
-		portStat.OID,
-		portStat.InOctets,
-		portStat.OutOctets,
-		portStat.InErrors,
-		portStat.OutErrors,
-		portStat.InUcastPkts,
-		portStat.OutUcastPkts,
-		portStat.InMulticastPkts,
-		portStat.OutMulticastPkts,
-		portStat.InBroadcastPkts,
-		portStat.OutBroadcastPkts,
-		portStat.InOctetsPkts,
-		portStat.OutOctetsPkts,
-		portStat.InBandwidthUtil,
-		portStat.OutBandwidthUtil)
+	fmt.Printf("%-20s: %v\n", "Id", portStat.Index)
+	fmt.Printf("%-20s: %v\n", "Name", portStat.Name)
+	fmt.Printf("%-20s: %v\n", "OID", portStat.OID)
+	fmt.Printf("%-20s: %v\n", "InOctets", portStat.InOctets)
+	fmt.Printf("%-20s: %v\n", "OutOctets", portStat.OutOctets)
+	fmt.Printf("%-20s: %v\n", "InErrors", portStat.InErrors)
+	fmt.Printf("%-20s: %v\n", "OutErrors", portStat.OutErrors)
+	fmt.Printf("%-20s: %v\n", "InUcastPkts", portStat.InUcastPkts)
+	fmt.Printf("%-20s: %v\n", "OutUcastPkts", portStat.OutUcastPkts)
+	fmt.Printf("%-20s: %v\n", "InMulticastPkts", portStat.InMulticastPkts)
+	fmt.Printf("%-20s: %v\n", "OutMulticastPkts", portStat.OutMulticastPkts)
+	fmt.Printf("%-20s: %v\n", "InBroadcastPkts", portStat.InBroadcastPkts)
+	fmt.Printf("%-20s: %v\n", "OutBroadcastPkts", portStat.OutBroadcastPkts)
+	fmt.Printf("%-20s: %v\n", "InOctetsPkts", portStat.InOctetsPkts)
+	fmt.Printf("%-20s: %v\n", "OutOctetsPkts", portStat.OutOctetsPkts)
+	fmt.Printf("%-20s: %v\n", "InBandwidthUtil", portStat.InBandwidthUtil)
+	fmt.Printf("%-20s: %v\n", "OutBandwidthUtil", portStat.OutBandwidthUtil)
 }
 
 func clearConsole() {
