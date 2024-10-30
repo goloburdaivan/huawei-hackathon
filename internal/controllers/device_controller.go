@@ -8,13 +8,11 @@ import (
 
 type DeviceController struct {
 	parseDeviceInfo *ssh.SshService
-	stopChannel     chan bool
 }
 
 func NewDeviceController(parseDeviceInfo *ssh.SshService) *DeviceController {
 	return &DeviceController{
 		parseDeviceInfo: parseDeviceInfo,
-		stopChannel:     make(chan bool),
 	}
 }
 
