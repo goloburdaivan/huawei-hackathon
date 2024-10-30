@@ -4,15 +4,19 @@ import (
 	"Hackathon/internal/cli"
 	"Hackathon/internal/controllers"
 	"Hackathon/internal/core/snmp"
+	"Hackathon/internal/core/ssh"
 	"Hackathon/internal/services"
 	"fmt"
 	"time"
 )
 
 func main() {
+	sshService := ssh.NewSshService("192.168.10.2", 22, "admin", "admin123")
+	err := sshService.Connect()
+
 	snmpService := snmp.NewSnmpService("192.168.10.2", 161, "public")
 	defer snmpService.CloseConnection()
-	err := snmpService.Connect()
+	err = snmpService.Connect()
 	if err != nil {
 		fmt.Println("Ошибка подключения к SNMP:", err)
 		return
@@ -37,6 +41,7 @@ func main() {
 		AddAction("Экспортировать информацию о всех портах", exportController.ExportPortStats).
 		AddAction("Экспортировать информацию конкретного порта", exportController.ExportPortStatsByPort).
 		EndSubMenu().
+		AddAction("Показать график для портов", portController.ShowPortGraph).
 		Build()
 
 	menu.Execute()

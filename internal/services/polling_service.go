@@ -1,7 +1,7 @@
 package services
 
 import (
-	"Hackathon/internal/core/snmp"
+	"Hackathon/internal/core"
 	"Hackathon/internal/core/structs"
 	"fmt"
 	"sync"
@@ -9,15 +9,15 @@ import (
 )
 
 type PollingService struct {
-	snmpService *snmp.SnmpService
-	portStats   []structs.PortInfo
-	mu          sync.RWMutex
+	service   core.PortStatisticsService
+	portStats []structs.PortInfo
+	mu        sync.RWMutex
 }
 
-func NewPollingService(snmpService *snmp.SnmpService) *PollingService {
+func NewPollingService(service core.PortStatisticsService) *PollingService {
 	return &PollingService{
-		snmpService: snmpService,
-		portStats:   []structs.PortInfo{},
+		service:   service,
+		portStats: []structs.PortInfo{},
 	}
 }
 
@@ -25,13 +25,13 @@ func (p *PollingService) StartPolling(interval time.Duration) {
 	go func() {
 		for {
 			time.Sleep(interval)
-			err := p.snmpService.PollStatistics()
+			err := p.service.PollStatistics()
 			if err != nil {
 				fmt.Println("Error polling statistics:", err)
 				continue
 			}
 			p.mu.Lock()
-			p.portStats = p.snmpService.PortStats
+			p.portStats = p.service.GetPortStats()
 			p.mu.Unlock()
 		}
 	}()
@@ -41,4 +41,10 @@ func (p *PollingService) GetPortStats() []structs.PortInfo {
 	p.mu.RLock()
 	defer p.mu.RUnlock()
 	return p.portStats
+}
+
+func (p *PollingService) IsValidPortIndex(index int) bool {
+	p.mu.RLock()
+	defer p.mu.RUnlock()
+	return index >= 0 && index < len(p.portStats)
 }
