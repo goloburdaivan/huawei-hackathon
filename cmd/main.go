@@ -36,12 +36,12 @@ func main() {
 	exportController := controllers.NewExportController(exportService, pollingService)
 
 	menu := cli.NewMenuBuilder("Главное меню").
-		AddAction("Показать информацию о портах", portController.ShowPortStats).
-		AddSubMenu("Выберите какую информацию вы хотите вывести:").
+		AddAction("Показать информацию о всех портах", portController.ShowPortStats).
+		AddSubMenu("Экспорт информации про порты").
 		AddAction("Экспортировать информацию о всех портах", exportController.ExportPortStats).
 		AddAction("Экспортировать информацию конкретного порта", exportController.ExportPortStatsByPort).
 		EndSubMenu().
-		AddAction("Показать график для портов", portController.ShowPortGraph).
+		AddAction("Показать график для определённого порта", portController.ShowPortGraph).
 		AddAction("Вывести информацию по определённому порту", portController.ShowPort).
 		Build()
 
