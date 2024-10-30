@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"Hackathon/internal/services"
+	"fmt"
 )
 
 type ExportController struct {
@@ -19,4 +20,15 @@ func NewExportController(exportService *services.ExportService, pollingService *
 func (ec *ExportController) ExportPortStats() {
 	portStats := ec.pollingService.GetPortStats()
 	go ec.exportService.ExportPortStatsToCSV(portStats)
+}
+
+func (ec *ExportController) ExportPortStatsByPort() {
+	var portIndex int
+	fmt.Print("Введите название порта для экспорта: ")
+	fmt.Scanln(&portIndex)
+
+	go func() {
+		portStats := ec.pollingService.GetPortStats()
+		ec.exportService.ExportPortStatsByIndex(portStats, portIndex)
+	}()
 }
