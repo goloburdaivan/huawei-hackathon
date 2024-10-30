@@ -34,6 +34,7 @@ func main() {
 
 	portController := controllers.NewPortController(pollingService)
 	exportController := controllers.NewExportController(exportService, pollingService)
+	deviceController := controllers.NewDeviceController(sshService)
 
 	menu := cli.NewMenuBuilder("Главное меню").
 		AddAction("Показать информацию о портах", portController.ShowPortStats).
@@ -43,6 +44,7 @@ func main() {
 		EndSubMenu().
 		AddAction("Показать график для портов", portController.ShowPortGraph).
 		AddAction("Вывести информацию по определённому порту", portController.ShowPort).
+		AddAction("Вывести информацию об устройстве", deviceController.ShowDeviceInfo).
 		Build()
 
 	menu.Execute()

@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"golang.org/x/crypto/ssh"
 	"io"
+	"log"
 	"strconv"
 	"strings"
 	"sync"
@@ -271,6 +272,41 @@ func parsePacketCounts(line, section string, currentPort *structs.PortInfo) {
 			}
 		}
 	}
+}
+
+func (s *SshService) ParseDeviceStatus() (structs.DeviceStatus, error) {
+	data, err := s.RunCommand("display device")
+	lines := strings.Split(data, "\n")
+
+	if err != nil {
+		log.Fatalf("ошибка при выполнении команды: %v", err)
+	}
+
+	if len(lines) < 3 {
+		return structs.DeviceStatus{}, fmt.Errorf("not enough data to parse")
+	}
+
+	fields := strings.Fields(lines[3])
+
+	if len(fields) < 8 {
+		return structs.DeviceStatus{}, fmt.Errorf("unexpected number of fields")
+	}
+
+	slot, err := strconv.Atoi(fields[0])
+	if err != nil {
+		return structs.DeviceStatus{}, fmt.Errorf("error parsing slot number: %v", err)
+	}
+
+	return structs.DeviceStatus{
+		Slot:     slot,
+		Sub:      fields[1],
+		Type:     fields[2],
+		Online:   fields[3],
+		Power:    fields[4],
+		Register: fields[5],
+		Status:   fields[6],
+		Role:     fields[7],
+	}, nil
 }
 
 func setInputCounts(packetType string, count uint, currentPort *structs.PortInfo) {
