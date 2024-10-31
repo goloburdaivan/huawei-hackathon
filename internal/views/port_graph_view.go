@@ -15,7 +15,7 @@ func DisplayPortGraph(portName string, portIndex int, operStatus string, stopCha
 	}
 	defer ui.Close()
 
-	baseTitle := fmt.Sprintf("Port %s (Index: %d) Status (UP = 1, DOWN = 0)", portName, portIndex)
+	baseTitle := fmt.Sprintf("Port %s (Index: %d) Status (UP = 1, DOWN = 0)", portName, portIndex+1)
 	plot := initializePlot(baseTitle)
 
 	ticker := time.NewTicker(1 * time.Second)

@@ -39,6 +39,9 @@ func (pc *PortController) ShowPortStats() {
 }
 
 func (pc *PortController) ShowPortGraph() {
+	portStats := pc.pollingService.GetPortStats()
+	views.DisplayPortList(portStats)
+
 	portIndex, err := pc.getPortIndex()
 	if err != nil {
 		fmt.Println(err)
@@ -46,7 +49,6 @@ func (pc *PortController) ShowPortGraph() {
 		return
 	}
 
-	portStats := pc.pollingService.GetPortStats()
 	portName := portStats[portIndex].Name
 	portStatus := portStats[portIndex].OperStatus
 
@@ -62,8 +64,8 @@ func (pc *PortController) ShowPort() {
 		fmt.Println("Возвращаемся в меню...")
 		return
 	}
-	portStat := pc.pollingService.GetPortStats()[portIndex]
-	views.DisplaySinglePortStats(&portStat)
+	portStat := pc.pollingService.GetPortStats()
+	views.DisplaySinglePortStats(&portStat[portIndex])
 
 	fmt.Println("Возвращаемся в меню...")
 }
@@ -84,7 +86,7 @@ func (pc *PortController) getPortIndex() (int, error) {
 		}
 
 		if pc.pollingService.IsValidPortIndex(portIndex) {
-			return portIndex, nil
+			return portIndex - 1, nil
 		}
 
 		fmt.Printf("Порт с индексом %d не найден. Попробуйте снова или введите -1 для возврата в меню.\n", portIndex)
