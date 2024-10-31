@@ -48,7 +48,7 @@ func DisplayPortStats(portStats []structs.PortInfo) {
 
 func DisplaySinglePortStats(portStat *structs.PortInfo) {
 	for _, r := range portStat.Name {
-		fmt.Printf("%U ", r) // %U выводит Unicode код символа
+		fmt.Printf("%U ", r)
 	}
 
 	println()
@@ -69,6 +69,8 @@ func DisplaySinglePortStats(portStat *structs.PortInfo) {
 	fmt.Printf("%-20s: %v\n", "OutOctetsPkts", portStat.OutOctetsPkts)
 	fmt.Printf("%-20s: %v\n", "InBandwidthUtil", portStat.InBandwidthUtil)
 	fmt.Printf("%-20s: %v\n", "OutBandwidthUtil", portStat.OutBandwidthUtil)
+	fmt.Printf("%-20s: %v\n", "OutBandwidthUtil", portStat.InBandwidthActual)
+	fmt.Printf("%-20s: %v\n", "OutBandwidthUtil", portStat.OutBandwidthActual)
 }
 
 func clearConsole() {

@@ -90,3 +90,24 @@ func (pc *PortController) getPortIndex() (int, error) {
 		fmt.Printf("Порт с индексом %d не найден. Попробуйте снова или введите -1 для возврата в меню.\n", portIndex)
 	}
 }
+
+func (c *PortController) ShowPortPrediction() {
+	fmt.Println("Введите индекс порта для прогнозирования:")
+	var index int
+	fmt.Scanln(&index)
+
+	if !c.pollingService.IsValidPortIndex(index) {
+		fmt.Println("Неверный индекс порта.")
+		return
+	}
+
+	predictedStat, err := c.pollingService.PredictPortStat(index)
+	if err != nil {
+		fmt.Println("Ошибка прогнозирования:", err)
+		return
+	}
+
+	fmt.Printf("Прогнозируемые данные для порта %d:\n", index)
+	fmt.Printf("InOctets: %d\n", predictedStat.InOctets)
+	fmt.Printf("OutOctets: %d\n", predictedStat.OutOctets)
+}

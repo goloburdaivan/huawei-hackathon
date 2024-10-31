@@ -90,6 +90,11 @@ func (s *SshService) parseInterfaceData(port *structs.PortInfo) {
 		case interfaceRegex.MatchString(line):
 			matches := interfaceRegex.FindStringSubmatch(line)
 			port.OperStatus = matches[2]
+		case strings.HasPrefix(line, "Last 300 seconds input utility rate"):
+			port.InBandwidthActual = parseFloatSuffix(line, ":")
+
+		case strings.HasPrefix(line, "Last 300 seconds output utility rate"):
+			port.OutBandwidthActual = parseFloatSuffix(line, ":")
 
 		case strings.Contains(line, "Line protocol current state"):
 			port.AdminStatus = parseState(line)

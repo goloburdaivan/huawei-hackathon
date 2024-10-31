@@ -41,6 +41,7 @@ func main() {
 		EndSubMenu().
 		AddAction("Показать график для портов", portController.ShowPortGraph).
 		AddAction("Вывести информацию по определённому порту", portController.ShowPort).
+		AddAction("Прогнозировать статистику порта", portController.ShowPortPrediction).
 		Build()
 
 	menu.Execute()
