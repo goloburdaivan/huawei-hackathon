@@ -4,7 +4,6 @@ import (
 	"Hackathon/internal/core"
 	"Hackathon/internal/core/events"
 	"Hackathon/internal/core/structs"
-	"errors"
 	"fmt"
 	"sync"
 	"time"
@@ -60,43 +59,6 @@ func (p *PollingService) saveHistory() {
 	}
 }
 
-func (p *PollingService) PredictPortStat(index int) (structs.PortInfo, error) {
-	p.mu.RLock()
-	defer p.mu.RUnlock()
-
-	history, exists := p.history[index]
-	if !exists || len(history) < 2 {
-		return structs.PortInfo{}, errors.New("Недостаточно данных для прогнозирования")
-	}
-
-	n := float64(len(history))
-	var sumX, sumY, sumXY, sumX2 float64
-
-	for i, stat := range history {
-		x := float64(i)
-		y := float64(stat.InOctets)
-		sumX += x
-		sumY += y
-		sumXY += x * y
-		sumX2 += x * x
-	}
-
-	denominator := n*sumX2 - sumX*sumX
-	if denominator == 0 {
-		return structs.PortInfo{}, errors.New("Ошибка вычисления регрессии")
-	}
-	a := (n*sumXY - sumX*sumY) / denominator
-	b := (sumY - a*sumX) / n
-
-	nextX := n
-	predictedInOctets := a*nextX + b
-
-	predictedStat := history[len(history)-1]
-	predictedStat.InOctets = uint(predictedInOctets)
-
-	return predictedStat, nil
-}
-
 func (p *PollingService) GetPortStats() []structs.PortInfo {
 	p.mu.RLock()
 	defer p.mu.RUnlock()
@@ -107,4 +69,10 @@ func (p *PollingService) IsValidPortIndex(index int) bool {
 	p.mu.RLock()
 	defer p.mu.RUnlock()
 	return index >= 0 && index < len(p.portStats)
+}
+
+func (p *PollingService) GetHistoricStats(index int) []structs.PortInfo {
+	p.mu.RLock()
+	defer p.mu.RUnlock()
+	return p.history[index]
 }

@@ -8,14 +8,16 @@ import (
 )
 
 type PortController struct {
-	pollingService *services.PollingService
-	stopChannel    chan bool
+	pollingService    *services.PollingService
+	stopChannel       chan bool
+	predictionService *services.PredictionService
 }
 
 func NewPortController(pollingService *services.PollingService) *PortController {
 	return &PortController{
-		pollingService: pollingService,
-		stopChannel:    make(chan bool),
+		pollingService:    pollingService,
+		stopChannel:       make(chan bool),
+		predictionService: services.NewPredictionService(),
 	}
 }
 
@@ -101,7 +103,7 @@ func (c *PortController) ShowPortPrediction() {
 		return
 	}
 
-	predictedStat, err := c.pollingService.PredictPortStat(index)
+	predictedStat, err := c.predictionService.PredictPortStat(c.pollingService.GetHistoricStats(index))
 	if err != nil {
 		fmt.Println("Ошибка прогнозирования:", err)
 		return
