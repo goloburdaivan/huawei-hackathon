@@ -48,12 +48,9 @@ func (pc *PortController) ShowPortStatusGraph() {
 		fmt.Println("Возвращаемся в меню...")
 		return
 	}
-	getStatus := func() float64 {
-		return pc.pollingService.GetPortStatus(portIndex)
-	}
 	portName := portStats[portIndex].Name
 
-	views.DisplayPortStatusGraph(portName, portIndex, getStatus, pc.stopChannel)
+	views.DisplayPortStatusGraph(portName, portIndex, pc.pollingService, pc.stopChannel)
 	fmt.Println("Возвращаемся в меню...")
 }
 

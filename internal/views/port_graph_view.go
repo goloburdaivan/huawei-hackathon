@@ -1,13 +1,14 @@
 package views
 
 import (
+	"Hackathon/internal/services"
 	"fmt"
 	ui "github.com/gizak/termui/v3"
 	"github.com/gizak/termui/v3/widgets"
 	"time"
 )
 
-func DisplayPortStatusGraph(portName string, portIndex int, getStatus func() float64, stopChannel chan bool) {
+func DisplayPortStatusGraph(portName string, portIndex int, pollingService *services.PollingService, stopChannel chan bool) {
 	if err := ui.Init(); err != nil {
 		fmt.Printf("Failed to initialize termui: %v\n", err)
 		return
@@ -27,7 +28,7 @@ func DisplayPortStatusGraph(portName string, portIndex int, getStatus func() flo
 			select {
 			case <-ticker.C:
 				currentTime := time.Now().Format("15:04:05")
-				updateStatusPlotData(plot, getStatus(), baseTitle, currentTime)
+				updateStatusPlotData(plot, pollingService.GetPortStatus(portIndex), baseTitle, currentTime)
 				ui.Render(plot)
 
 			case e := <-uiEvents:
@@ -52,6 +53,7 @@ func DisplayPortOctetsGraph(portName string, portIndex int, octetType string, st
 
 	baseTitle := fmt.Sprintf("Port %s (Index: %d) %s Over Time", portName, portIndex+1, octetType)
 	plot := initializePlot(baseTitle, 20)
+	plot.Data[0] = append(plot.Data[0], 0)
 
 	ticker := time.NewTicker(1 * time.Second)
 	defer ticker.Stop()
@@ -63,7 +65,7 @@ func DisplayPortOctetsGraph(portName string, portIndex int, octetType string, st
 			select {
 			case <-ticker.C:
 				currentTime := time.Now().Format("15:04:05")
-				octets := getOctets()
+				octets := getOctets() / 1024 / 1024
 				updateOctetsPlotData(plot, octets, baseTitle, currentTime)
 				ui.Render(plot)
 
