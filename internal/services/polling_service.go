@@ -104,5 +104,5 @@ func (p *PollingService) GetPortStats() []structs.PortInfo {
 }
 
 func (p *PollingService) IsValidPortIndex(index int) bool {
-	return index >= 0 && index < len(p.portStats)
+	return index > 0 && index < len(p.portStats)
 }
