@@ -3,24 +3,23 @@ package main
 import (
 	"Hackathon/internal/cli"
 	"Hackathon/internal/controllers"
+	"Hackathon/internal/core/events"
+	"Hackathon/internal/core/events/listeners"
 	"Hackathon/internal/services"
 	"fmt"
 	"time"
 )
 
 func main() {
-	// sshService := services.ConnectSSH()
+	sshService := services.ConnectSSH()
 	snmpService := services.ConnectSNMP()
 	defer snmpService.CloseConnection()
 	err := snmpService.Connect()
+	dispatcher := events.GetDispatcher()
+	dispatcher.Register("PortStatUpdated", &listeners.BandwidthCriticalListener{})
+	err = sshService.Connect()
 	if err != nil {
-		fmt.Println("Ошибка подключения к SNMP:", err)
-		return
-	}
-
-	err = snmpService.FetchPorts()
-	if err != nil {
-		fmt.Println("Ошибка получения данных о портах:", err)
+		fmt.Println(err)
 		return
 	}
 
@@ -43,6 +42,7 @@ func main() {
 		AddAction("Показать график OutOctets для определённого порта", func() { portController.ShowPortOctetsGraph("OutOctets") }).
 		EndSubMenu().
 		AddAction("Вывести информацию по определённому порту", portController.ShowPort).
+		AddAction("Прогнозировать статистику порта", portController.ShowPortPrediction).
 		Build()
 
 	menu.Execute()

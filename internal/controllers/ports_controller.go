@@ -8,14 +8,16 @@ import (
 )
 
 type PortController struct {
-	pollingService *services.PollingService
-	stopChannel    chan bool
+	pollingService    *services.PollingService
+	stopChannel       chan bool
+	predictionService *services.PredictionService
 }
 
 func NewPortController(pollingService *services.PollingService) *PortController {
 	return &PortController{
-		pollingService: pollingService,
-		stopChannel:    make(chan bool),
+		pollingService:    pollingService,
+		stopChannel:       make(chan bool),
+		predictionService: services.NewPredictionService(),
 	}
 }
 
@@ -119,4 +121,25 @@ func (pc *PortController) getPortIndex() (int, error) {
 
 		fmt.Printf("Порт с индексом %d не найден. Попробуйте снова или введите -1 для возврата в меню.\n", portIndex)
 	}
+}
+
+func (c *PortController) ShowPortPrediction() {
+	fmt.Println("Введите индекс порта для прогнозирования:")
+	var index int
+	fmt.Scanln(&index)
+
+	if !c.pollingService.IsValidPortIndex(index) {
+		fmt.Println("Неверный индекс порта.")
+		return
+	}
+
+	predictedStat, err := c.predictionService.PredictPortStat(c.pollingService.GetHistoricStats(index))
+	if err != nil {
+		fmt.Println("Ошибка прогнозирования:", err)
+		return
+	}
+
+	fmt.Printf("Прогнозируемые данные для порта %d:\n", index)
+	fmt.Printf("InOctets: %d\n", predictedStat.InOctets)
+	fmt.Printf("OutOctets: %d\n", predictedStat.OutOctets)
 }

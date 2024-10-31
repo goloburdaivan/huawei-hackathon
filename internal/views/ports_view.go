@@ -68,7 +68,6 @@ func DisplayPortStats(portStats []structs.PortInfo) {
 func DisplaySinglePortStats(portStat *structs.PortInfo) {
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeader([]string{"Property", "Value"})
-
 	table.Append([]string{"Id", fmt.Sprintf("%v", portStat.Index)})
 	table.Append([]string{"Name", portStat.Name})
 	table.Append([]string{"OID", portStat.OID})
@@ -86,7 +85,8 @@ func DisplaySinglePortStats(portStat *structs.PortInfo) {
 	table.Append([]string{"OutOctetsPkts", fmt.Sprintf("%v", portStat.OutOctetsPkts)})
 	table.Append([]string{"InBandwidthUtil", fmt.Sprintf("%v", portStat.InBandwidthUtil)})
 	table.Append([]string{"OutBandwidthUtil", fmt.Sprintf("%v", portStat.OutBandwidthUtil)})
-
+	table.Append([]string{"InBandwidthActual", fmt.Sprintf("%v", portStat.InBandwidthActual)})
+	table.Append([]string{"OutBandwidthActual", fmt.Sprintf("%v", portStat.OutBandwidthActual)})
 	table.Render()
 }
 
