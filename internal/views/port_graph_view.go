@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-func DisplayPortGraph(portName string, portIndex int, operStatus string, stopChannel chan bool) {
+func DisplayPortStatusGraph(portName string, portIndex int, operStatus string, stopChannel chan bool) {
 	if err := ui.Init(); err != nil {
 		fmt.Printf("Failed to initialize termui: %v\n", err)
 		return
@@ -16,7 +16,7 @@ func DisplayPortGraph(portName string, portIndex int, operStatus string, stopCha
 	defer ui.Close()
 
 	baseTitle := fmt.Sprintf("Port %s (Index: %d) Status (UP = 1, DOWN = 0)", portName, portIndex+1)
-	plot := initializePlot(baseTitle)
+	plot := initializePlot(baseTitle, 10)
 
 	ticker := time.NewTicker(1 * time.Second)
 	defer ticker.Stop()
@@ -28,7 +28,7 @@ func DisplayPortGraph(portName string, portIndex int, operStatus string, stopCha
 			select {
 			case <-ticker.C:
 				currentTime := time.Now().Format("15:04:05")
-				updatePlotData(plot, snmp.GetPortStatus(operStatus), baseTitle, currentTime)
+				updateStatusPlotData(plot, snmp.GetPortStatus(operStatus), baseTitle, currentTime)
 				ui.Render(plot)
 
 			case e := <-uiEvents:
@@ -44,18 +44,69 @@ func DisplayPortGraph(portName string, portIndex int, operStatus string, stopCha
 	clearConsole()
 }
 
-func initializePlot(baseTitle string) *widgets.Plot {
+func DisplayPortOctetsGraph(portName string, portIndex int, octetType string, stopChannel chan bool, getOctets func() float64) {
+	if err := ui.Init(); err != nil {
+		fmt.Printf("Failed to initialize termui: %v\n", err)
+		return
+	}
+	defer ui.Close()
+
+	baseTitle := fmt.Sprintf("Port %s (Index: %d) %s Over Time", portName, portIndex+1, octetType)
+	plot := initializePlot(baseTitle, 20)
+
+	ticker := time.NewTicker(1 * time.Second)
+	defer ticker.Stop()
+
+	uiEvents := ui.PollEvents()
+
+	go func() {
+		for {
+			select {
+			case <-ticker.C:
+				currentTime := time.Now().Format("15:04:05")
+				octets := getOctets()
+				updateOctetsPlotData(plot, octets, baseTitle, currentTime)
+				ui.Render(plot)
+
+			case e := <-uiEvents:
+				if e.ID == "q" || e.ID == "<Enter>" {
+					stopChannel <- true
+					return
+				}
+			}
+		}
+	}()
+
+	<-stopChannel
+	clearConsole()
+}
+
+func initializePlot(baseTitle string, y2 int) *widgets.Plot {
 	plot := widgets.NewPlot()
 	plot.Title = baseTitle
 	plot.Data = [][]float64{{0}}
-	plot.SetRect(0, 0, 110, 10)
+	plot.SetRect(0, 0, 110, y2)
 	plot.AxesColor = ui.ColorWhite
 	plot.Marker = widgets.MarkerBraille
 	plot.HorizontalScale = 1
 	return plot
 }
 
-func updatePlotData(plot *widgets.Plot, status float64, baseTitle, currentTime string) {
+func updateOctetsPlotData(plot *widgets.Plot, octets float64, baseTitle, currentTime string) {
+	if len(plot.Data) == 0 {
+		plot.Data = append(plot.Data, []float64{})
+	}
+
+	if len(plot.Data[0]) > 100 {
+		plot.Data[0] = plot.Data[0][1:]
+	}
+
+	plot.Data[0] = append(plot.Data[0], octets)
+	plot.Title = fmt.Sprintf("%s - Time: %s", baseTitle, currentTime)
+	plot.LineColors = []ui.Color{ui.ColorCyan}
+}
+
+func updateStatusPlotData(plot *widgets.Plot, status float64, baseTitle, currentTime string) {
 	if len(plot.Data) == 0 {
 		plot.Data = append(plot.Data, []float64{})
 	}

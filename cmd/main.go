@@ -33,7 +33,11 @@ func main() {
 		AddAction("Экспортировать информацию о всех портах", exportController.ExportPortStats).
 		AddAction("Экспортировать информацию конкретного порта", exportController.ExportPortStatsByPort).
 		EndSubMenu().
-		AddAction("Показать график для определённого порта", portController.ShowPortGraph).
+		AddAction("Показать график статусов для определённого порта", portController.ShowPortStatusGraph).
+		AddSubMenu("Графики InOctets/OutOctets для определённого порта").
+		AddAction("Показать график InOctets для определённого порта", func() { portController.ShowPortOctetsGraph("InOctets") }).
+		AddAction("Показать график OutOctets для определённого порта", func() { portController.ShowPortOctetsGraph("OutOctets") }).
+		EndSubMenu().
 		AddAction("Вывести информацию по определённому порту", portController.ShowPort).
 		AddAction("Вывести информацию об устройстве", deviceController.ShowDeviceInfo).
 		Build()

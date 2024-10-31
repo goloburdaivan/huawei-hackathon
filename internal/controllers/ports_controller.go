@@ -38,7 +38,7 @@ func (pc *PortController) ShowPortStats() {
 	}
 }
 
-func (pc *PortController) ShowPortGraph() {
+func (pc *PortController) ShowPortStatusGraph() {
 	portStats := pc.pollingService.GetPortStats()
 	views.DisplayPortList(portStats)
 
@@ -52,8 +52,39 @@ func (pc *PortController) ShowPortGraph() {
 	portName := portStats[portIndex].Name
 	portStatus := portStats[portIndex].OperStatus
 
-	views.DisplayPortGraph(portName, portIndex, portStatus, pc.stopChannel)
+	views.DisplayPortStatusGraph(portName, portIndex, portStatus, pc.stopChannel)
 
+	fmt.Println("Возвращаемся в меню...")
+}
+
+func (pc *PortController) ShowPortOctetsGraph(octetType string) {
+	portStats := pc.pollingService.GetPortStats()
+	views.DisplayPortList(portStats)
+
+	portIndex, err := pc.getPortIndex()
+	if err != nil {
+		fmt.Println(err)
+		fmt.Println("Возвращаемся в меню...")
+		return
+	}
+
+	portName := portStats[portIndex].Name
+
+	var getOctetsFunc func() float64
+	if octetType == "InOctets" {
+		getOctetsFunc = func() float64 {
+			return float64(pc.pollingService.GetPortStats()[portIndex].InOctets)
+		}
+	} else if octetType == "OutOctets" {
+		getOctetsFunc = func() float64 {
+			return float64(pc.pollingService.GetPortStats()[portIndex].OutOctets)
+		}
+	} else {
+		fmt.Println("Неизвестный тип Octets. Используйте 'InOctets' или 'OutOctets'.")
+		return
+	}
+
+	views.DisplayPortOctetsGraph(portName, portIndex, octetType, pc.stopChannel, getOctetsFunc)
 	fmt.Println("Возвращаемся в меню...")
 }
 
