@@ -11,18 +11,34 @@ import (
 )
 
 func main() {
-	sshService := ssh.NewSshService("192.168.10.2", 22, "admin", "admin123")
-	err := sshService.Connect()
-
-	snmpService := snmp.NewSnmpService("192.168.10.2", 161, "public")
-	defer snmpService.CloseConnection()
-	err = snmpService.Connect()
-	if err != nil {
-		fmt.Println("Ошибка подключения к SNMP:", err)
-		return
+	var sshService *ssh.SshService
+	for {
+		sshIP, sshPort, sshUser, sshPass := services.GetSSHInput() // Используем функцию из input_service
+		sshService = ssh.NewSshService(sshIP, sshPort, sshUser, sshPass)
+		err := sshService.Connect()
+		if err != nil {
+			fmt.Println("Ошибка подключения к SSH:", err)
+			fmt.Println("Попробуйте ввести данные снова.")
+			continue
+		}
+		break
 	}
 
-	err = snmpService.FetchPorts()
+	var snmpService *snmp.SnmpService
+	for {
+		snmpIP, snmpPort, snmpCommunity := services.GetSNMPInput() // Используем функцию из input_service
+		snmpService = snmp.NewSnmpService(snmpIP, snmpPort, snmpCommunity)
+		err := snmpService.Connect()
+		if err != nil {
+			fmt.Println("Ошибка подключения к SNMP:", err)
+			fmt.Println("Попробуйте ввести данные снова.")
+			continue
+		}
+		break
+	}
+	defer snmpService.CloseConnection()
+
+	err := snmpService.FetchPorts()
 	if err != nil {
 		fmt.Println("Ошибка получения данных о портах:", err)
 		return
