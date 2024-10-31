@@ -7,4 +7,5 @@ type PortStatisticsService interface {
 	GetPortStats() []structs.PortInfo
 	Connect() error
 	CloseConnection()
+	FetchPorts() error
 }

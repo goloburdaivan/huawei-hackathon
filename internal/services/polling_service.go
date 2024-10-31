@@ -15,6 +15,7 @@ type PollingService struct {
 }
 
 func NewPollingService(service core.PortStatisticsService) *PollingService {
+	service.FetchPorts()
 	return &PollingService{
 		service:   service,
 		portStats: []structs.PortInfo{},

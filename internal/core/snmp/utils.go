@@ -1,5 +1,7 @@
 package snmp
 
+import "strings"
+
 func getStatusLabel(status int) string {
 	switch status {
 	case 1:
@@ -12,7 +14,7 @@ func getStatusLabel(status int) string {
 }
 
 func GetPortStatus(operStatus string) float64 {
-	if operStatus == "UP" {
+	if strings.ToLower(operStatus) == "up" {
 		return 1
 	}
 	return 0

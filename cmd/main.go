@@ -11,10 +11,14 @@ import (
 )
 
 func main() {
-	sshService := ssh.NewSshService("192.168.10.2", 22, "admin", "admin123")
+	sshService := ssh.NewSshService("192.168.65.6", 22, "Student_1", "UY2AEaZ7BmKs#")
 	err := sshService.Connect()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 
-	snmpService := snmp.NewSnmpService("192.168.10.2", 161, "public")
+	snmpService := snmp.NewSnmpService("192.168.65.6", 161, "public")
 	defer snmpService.CloseConnection()
 	err = snmpService.Connect()
 	if err != nil {
@@ -22,13 +26,7 @@ func main() {
 		return
 	}
 
-	err = snmpService.FetchPorts()
-	if err != nil {
-		fmt.Println("Ошибка получения данных о портах:", err)
-		return
-	}
-
-	pollingService := services.NewPollingService(snmpService)
+	pollingService := services.NewPollingService(sshService)
 	pollingService.StartPolling(1 * time.Second)
 	exportService := services.NewExportService()
 

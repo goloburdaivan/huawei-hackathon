@@ -18,6 +18,6 @@ type PortInfo struct {
 	OperStatus       string
 	InOctetsPkts     uint
 	OutOctetsPkts    uint
-	InBandwidthUtil  uint
-	OutBandwidthUtil uint
+	InBandwidthUtil  float32
+	OutBandwidthUtil float32
 }
