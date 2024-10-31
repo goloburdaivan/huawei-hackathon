@@ -10,6 +10,25 @@ import (
 	"time"
 )
 
+func DisplayPortList(portStats []structs.PortInfo) {
+	clearConsole()
+
+	table := tablewriter.NewWriter(os.Stdout)
+	table.SetHeader([]string{
+		"Index", "Name",
+	})
+
+	for _, port := range portStats {
+		row := []string{
+			fmt.Sprintf("%d", port.Index),
+			port.Name,
+		}
+		table.Append(row)
+	}
+	table.Render()
+
+}
+
 func DisplayPortStats(portStats []structs.PortInfo) {
 	clearConsole()
 
@@ -47,28 +66,28 @@ func DisplayPortStats(portStats []structs.PortInfo) {
 }
 
 func DisplaySinglePortStats(portStat *structs.PortInfo) {
-	for _, r := range portStat.Name {
-		fmt.Printf("%U ", r) // %U выводит Unicode код символа
-	}
+	table := tablewriter.NewWriter(os.Stdout)
+	table.SetHeader([]string{"Property", "Value"})
 
-	println()
-	fmt.Printf("%-20s: %v\n", "Id", portStat.Index)
-	fmt.Printf("%-20s: %v\n", "Name", portStat.Name)
-	fmt.Printf("%-20s: %v\n", "OID", portStat.OID)
-	fmt.Printf("%-20s: %v\n", "InOctets", portStat.InOctets)
-	fmt.Printf("%-20s: %v\n", "OutOctets", portStat.OutOctets)
-	fmt.Printf("%-20s: %v\n", "InErrors", portStat.InErrors)
-	fmt.Printf("%-20s: %v\n", "OutErrors", portStat.OutErrors)
-	fmt.Printf("%-20s: %v\n", "InUcastPkts", portStat.InUcastPkts)
-	fmt.Printf("%-20s: %v\n", "OutUcastPkts", portStat.OutUcastPkts)
-	fmt.Printf("%-20s: %v\n", "InMulticastPkts", portStat.InMulticastPkts)
-	fmt.Printf("%-20s: %v\n", "OutMulticastPkts", portStat.OutMulticastPkts)
-	fmt.Printf("%-20s: %v\n", "InBroadcastPkts", portStat.InBroadcastPkts)
-	fmt.Printf("%-20s: %v\n", "OutBroadcastPkts", portStat.OutBroadcastPkts)
-	fmt.Printf("%-20s: %v\n", "InOctetsPkts", portStat.InOctetsPkts)
-	fmt.Printf("%-20s: %v\n", "OutOctetsPkts", portStat.OutOctetsPkts)
-	fmt.Printf("%-20s: %v\n", "InBandwidthUtil", portStat.InBandwidthUtil)
-	fmt.Printf("%-20s: %v\n", "OutBandwidthUtil", portStat.OutBandwidthUtil)
+	table.Append([]string{"Id", fmt.Sprintf("%v", portStat.Index)})
+	table.Append([]string{"Name", portStat.Name})
+	table.Append([]string{"OID", portStat.OID})
+	table.Append([]string{"InOctets", fmt.Sprintf("%v", portStat.InOctets)})
+	table.Append([]string{"OutOctets", fmt.Sprintf("%v", portStat.OutOctets)})
+	table.Append([]string{"InErrors", fmt.Sprintf("%v", portStat.InErrors)})
+	table.Append([]string{"OutErrors", fmt.Sprintf("%v", portStat.OutErrors)})
+	table.Append([]string{"InUcastPkts", fmt.Sprintf("%v", portStat.InUcastPkts)})
+	table.Append([]string{"OutUcastPkts", fmt.Sprintf("%v", portStat.OutUcastPkts)})
+	table.Append([]string{"InMulticastPkts", fmt.Sprintf("%v", portStat.InMulticastPkts)})
+	table.Append([]string{"OutMulticastPkts", fmt.Sprintf("%v", portStat.OutMulticastPkts)})
+	table.Append([]string{"InBroadcastPkts", fmt.Sprintf("%v", portStat.InBroadcastPkts)})
+	table.Append([]string{"OutBroadcastPkts", fmt.Sprintf("%v", portStat.OutBroadcastPkts)})
+	table.Append([]string{"InOctetsPkts", fmt.Sprintf("%v", portStat.InOctetsPkts)})
+	table.Append([]string{"OutOctetsPkts", fmt.Sprintf("%v", portStat.OutOctetsPkts)})
+	table.Append([]string{"InBandwidthUtil", fmt.Sprintf("%v", portStat.InBandwidthUtil)})
+	table.Append([]string{"OutBandwidthUtil", fmt.Sprintf("%v", portStat.OutBandwidthUtil)})
+
+	table.Render()
 }
 
 func clearConsole() {

@@ -38,7 +38,29 @@ func (pc *PortController) ShowPortStats() {
 	}
 }
 
-func (pc *PortController) ShowPortGraph() {
+func (pc *PortController) ShowPortStatusGraph() {
+	portStats := pc.pollingService.GetPortStats()
+	views.DisplayPortList(portStats)
+
+	portIndex, err := pc.getPortIndex()
+	if err != nil {
+		fmt.Println(err)
+		fmt.Println("Возвращаемся в меню...")
+		return
+	}
+	getStatus := func() float64 {
+		return pc.pollingService.GetPortStatus(portIndex)
+	}
+	portName := portStats[portIndex].Name
+
+	views.DisplayPortStatusGraph(portName, portIndex, getStatus, pc.stopChannel)
+	fmt.Println("Возвращаемся в меню...")
+}
+
+func (pc *PortController) ShowPortOctetsGraph(octetType string) {
+	portStats := pc.pollingService.GetPortStats()
+	views.DisplayPortList(portStats)
+
 	portIndex, err := pc.getPortIndex()
 	if err != nil {
 		fmt.Println(err)
@@ -46,12 +68,23 @@ func (pc *PortController) ShowPortGraph() {
 		return
 	}
 
-	portStats := pc.pollingService.GetPortStats()
 	portName := portStats[portIndex].Name
-	portStatus := portStats[portIndex].OperStatus
 
-	views.DisplayPortGraph(portName, portIndex, portStatus, pc.stopChannel)
+	var getOctetsFunc func() float64
+	if octetType == "InOctets" {
+		getOctetsFunc = func() float64 {
+			return float64(pc.pollingService.GetPortStats()[portIndex].InOctets)
+		}
+	} else if octetType == "OutOctets" {
+		getOctetsFunc = func() float64 {
+			return float64(pc.pollingService.GetPortStats()[portIndex].OutOctets)
+		}
+	} else {
+		fmt.Println("Неизвестный тип Octets. Используйте 'InOctets' или 'OutOctets'.")
+		return
+	}
 
+	views.DisplayPortOctetsGraph(portName, portIndex, octetType, pc.stopChannel, getOctetsFunc)
 	fmt.Println("Возвращаемся в меню...")
 }
 
@@ -62,8 +95,8 @@ func (pc *PortController) ShowPort() {
 		fmt.Println("Возвращаемся в меню...")
 		return
 	}
-	portStat := pc.pollingService.GetPortStats()[portIndex]
-	views.DisplaySinglePortStats(&portStat)
+	portStat := pc.pollingService.GetPortStats()
+	views.DisplaySinglePortStats(&portStat[portIndex])
 
 	fmt.Println("Возвращаемся в меню...")
 }
@@ -84,7 +117,7 @@ func (pc *PortController) getPortIndex() (int, error) {
 		}
 
 		if pc.pollingService.IsValidPortIndex(portIndex) {
-			return portIndex, nil
+			return portIndex - 1, nil
 		}
 
 		fmt.Printf("Порт с индексом %d не найден. Попробуйте снова или введите -1 для возврата в меню.\n", portIndex)

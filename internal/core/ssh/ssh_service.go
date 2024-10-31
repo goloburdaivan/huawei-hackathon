@@ -40,6 +40,10 @@ func (s *SshService) PollStatistics() error {
 func (s *SshService) FetchPorts() error {
 	s.parsePorts()
 
+	for i := range s.portStats {
+		s.parseInterfaceData(&s.portStats[i])
+	}
+
 	return nil
 }
 

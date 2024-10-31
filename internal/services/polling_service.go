@@ -38,6 +38,16 @@ func (p *PollingService) StartPolling(interval time.Duration) {
 	}()
 }
 
+func (p *PollingService) GetPortStatus(index int) float64 {
+	if !p.IsValidPortIndex(index) {
+		return 0
+	}
+	if p.portStats[index].OperStatus == "UP" {
+		return 1
+	}
+	return 0
+}
+
 func (p *PollingService) GetPortStats() []structs.PortInfo {
 	p.mu.RLock()
 	defer p.mu.RUnlock()
@@ -45,7 +55,5 @@ func (p *PollingService) GetPortStats() []structs.PortInfo {
 }
 
 func (p *PollingService) IsValidPortIndex(index int) bool {
-	p.mu.RLock()
-	defer p.mu.RUnlock()
-	return index >= 0 && index < len(p.portStats)
+	return index > 0 && index < len(p.portStats)
 }

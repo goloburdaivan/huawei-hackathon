@@ -3,30 +3,28 @@ package main
 import (
 	"Hackathon/internal/cli"
 	"Hackathon/internal/controllers"
-	"Hackathon/internal/core/snmp"
-	"Hackathon/internal/core/ssh"
 	"Hackathon/internal/services"
 	"fmt"
 	"time"
 )
 
 func main() {
-	sshService := ssh.NewSshService("192.168.65.6", 22, "Student_1", "UY2AEaZ7BmKs#")
-	err := sshService.Connect()
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-
-	snmpService := snmp.NewSnmpService("192.168.65.6", 161, "public")
+	// sshService := services.ConnectSSH()
+	snmpService := services.ConnectSNMP()
 	defer snmpService.CloseConnection()
-	err = snmpService.Connect()
+	err := snmpService.Connect()
 	if err != nil {
 		fmt.Println("Ошибка подключения к SNMP:", err)
 		return
 	}
 
-	pollingService := services.NewPollingService(sshService)
+	err = snmpService.FetchPorts()
+	if err != nil {
+		fmt.Println("Ошибка получения данных о портах:", err)
+		return
+	}
+
+	pollingService := services.NewPollingService(snmpService)
 	pollingService.StartPolling(1 * time.Second)
 	exportService := services.NewExportService()
 
@@ -34,12 +32,16 @@ func main() {
 	exportController := controllers.NewExportController(exportService, pollingService)
 
 	menu := cli.NewMenuBuilder("Главное меню").
-		AddAction("Показать информацию о портах", portController.ShowPortStats).
-		AddSubMenu("Выберите какую информацию вы хотите вывести:").
+		AddAction("Показать информацию о всех портах", portController.ShowPortStats).
+		AddSubMenu("Экспорт информации про порты").
 		AddAction("Экспортировать информацию о всех портах", exportController.ExportPortStats).
 		AddAction("Экспортировать информацию конкретного порта", exportController.ExportPortStatsByPort).
 		EndSubMenu().
-		AddAction("Показать график для портов", portController.ShowPortGraph).
+		AddAction("Показать график статусов для определённого порта", portController.ShowPortStatusGraph).
+		AddSubMenu("Графики InOctets/OutOctets для определённого порта").
+		AddAction("Показать график InOctets для определённого порта", func() { portController.ShowPortOctetsGraph("InOctets") }).
+		AddAction("Показать график OutOctets для определённого порта", func() { portController.ShowPortOctetsGraph("OutOctets") }).
+		EndSubMenu().
 		AddAction("Вывести информацию по определённому порту", portController.ShowPort).
 		Build()
 
