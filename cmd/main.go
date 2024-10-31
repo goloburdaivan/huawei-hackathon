@@ -4,41 +4,22 @@ import (
 	"Hackathon/internal/cli"
 	"Hackathon/internal/controllers"
 	"Hackathon/internal/core/snmp"
-	"Hackathon/internal/core/ssh"
+	"Hackathon/internal/core/ssh" // Импортируйте ваш пакет ssh
 	"Hackathon/internal/services"
 	"fmt"
 	"time"
 )
 
 func main() {
-	var sshService *ssh.SshService
-	for {
-		sshIP, sshPort, sshUser, sshPass := services.GetSSHInput() // Используем функцию из input_service
-		sshService = ssh.NewSshService(sshIP, sshPort, sshUser, sshPass)
-		err := sshService.Connect()
-		if err != nil {
-			fmt.Println("Ошибка подключения к SSH:", err)
-			fmt.Println("Попробуйте ввести данные снова.")
-			continue
-		}
-		break
-	}
-
-	var snmpService *snmp.SnmpService
-	for {
-		snmpIP, snmpPort, snmpCommunity := services.GetSNMPInput() // Используем функцию из input_service
-		snmpService = snmp.NewSnmpService(snmpIP, snmpPort, snmpCommunity)
-		err := snmpService.Connect()
-		if err != nil {
-			fmt.Println("Ошибка подключения к SNMP:", err)
-			fmt.Println("Попробуйте ввести данные снова.")
-			continue
-		}
-		break
+	sshService := ssh.ConnectSSH()
+	snmpService, err := snmp.ConnectSNMP()
+	if err != nil {
+		fmt.Println(err)
+		return
 	}
 	defer snmpService.CloseConnection()
 
-	err := snmpService.FetchPorts()
+	err = snmpService.FetchPorts()
 	if err != nil {
 		fmt.Println("Ошибка получения данных о портах:", err)
 		return
