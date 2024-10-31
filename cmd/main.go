@@ -3,6 +3,8 @@ package main
 import (
 	"Hackathon/internal/cli"
 	"Hackathon/internal/controllers"
+	"Hackathon/internal/core/events"
+	"Hackathon/internal/core/events/listeners"
 	"Hackathon/internal/core/snmp"
 	"Hackathon/internal/core/ssh"
 	"Hackathon/internal/services"
@@ -11,6 +13,8 @@ import (
 )
 
 func main() {
+	dispatcher := events.GetDispatcher()
+	dispatcher.Register("PortStatUpdated", &listeners.BandwidthCriticalListener{})
 	sshService := ssh.NewSshService("192.168.65.6", 22, "Student_1", "UY2AEaZ7BmKs#")
 	err := sshService.Connect()
 	if err != nil {

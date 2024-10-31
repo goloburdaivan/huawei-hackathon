@@ -2,10 +2,10 @@ package services
 
 import (
 	"Hackathon/internal/core"
+	"Hackathon/internal/core/events"
 	"Hackathon/internal/core/structs"
 	"errors"
 	"fmt"
-	"github.com/go-toast/toast"
 	"sync"
 	"time"
 )
@@ -37,34 +37,26 @@ func (p *PollingService) StartPolling(interval time.Duration) {
 			}
 			p.mu.Lock()
 			p.portStats = p.service.GetPortStats()
-
-			for _, port := range p.portStats {
-				p.history[port.Index] = append(p.history[port.Index], port)
-
-				if len(p.history[port.Index]) > 100 {
-					p.history[port.Index] = p.history[port.Index][1:]
-				}
-
-				if port.InBandwidthActual > port.InBandwidthUtil || port.OutBandwidthActual > port.OutBandwidthUtil {
-					message := fmt.Sprintf("ВНИМАНИЕ: Перегрузка на порте %d (%s).\nУтилизация входящей полосы: %.2f%%\nУтилизация исходящей полосы: %.2f%%",
-						port.Index, port.Name, port.InBandwidthUtil, port.OutBandwidthUtil)
-					p.sendToastNotification(message)
-				}
-			}
+			p.saveHistory()
 			p.mu.Unlock()
 		}
 	}()
 }
 
-func (p *PollingService) sendToastNotification(message string) {
-	notification := toast.Notification{
-		AppID:   "YourAppID",
-		Title:   "Сетевое уведомление",
-		Message: message,
-	}
-	err := notification.Push()
-	if err != nil {
-		fmt.Println("Ошибка отправки уведомления:", err)
+func (p *PollingService) saveHistory() {
+	for _, port := range p.portStats {
+		p.history[port.Index] = append(p.history[port.Index], port)
+
+		if len(p.history[port.Index]) > 100 {
+			p.history[port.Index] = p.history[port.Index][1:]
+		}
+
+		event := events.PortStatEvent{
+			Port:    port,
+			History: p.history[port.Index],
+		}
+
+		go events.GetDispatcher().Dispatch("PortStatUpdated", event)
 	}
 }
 
