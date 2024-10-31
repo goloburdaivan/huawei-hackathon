@@ -2,7 +2,6 @@ package ssh
 
 import (
 	"Hackathon/internal/core/structs"
-	"Hackathon/internal/services"
 	"bufio"
 	"bytes"
 	"fmt"
@@ -93,22 +92,6 @@ func (s *SshService) Connect() error {
 	}
 
 	return nil
-}
-
-func ConnectSSH() *SshService {
-	var sshService *SshService
-	for {
-		sshIP, sshPort, sshUser, sshPass := services.GetSSHInput()
-		sshService = NewSshService(sshIP, sshPort, sshUser, sshPass)
-		err := sshService.Connect()
-		if err != nil {
-			fmt.Println("Ошибка подключения к SSH:", err)
-			fmt.Println("Попробуйте ввести данные снова.")
-			continue
-		}
-		break
-	}
-	return sshService
 }
 
 func (s *SshService) initConnection(config *ssh.ClientConfig) (*ssh.Client, error) {

@@ -3,23 +3,17 @@ package main
 import (
 	"Hackathon/internal/cli"
 	"Hackathon/internal/controllers"
-	"Hackathon/internal/core/snmp"
-	"Hackathon/internal/core/ssh" // Импортируйте ваш пакет ssh
 	"Hackathon/internal/services"
 	"fmt"
 	"time"
 )
 
 func main() {
-	sshService := ssh.ConnectSSH()
-	snmpService, err := snmp.ConnectSNMP()
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
+	sshService := services.ConnectSSH()
+	snmpService := services.ConnectSNMP()
 	defer snmpService.CloseConnection()
 
-	err = snmpService.FetchPorts()
+	err := snmpService.FetchPorts()
 	if err != nil {
 		fmt.Println("Ошибка получения данных о портах:", err)
 		return

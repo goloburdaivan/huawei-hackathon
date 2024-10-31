@@ -2,7 +2,6 @@ package snmp
 
 import (
 	"Hackathon/internal/core/structs"
-	"Hackathon/internal/services"
 	"fmt"
 	"github.com/gosnmp/gosnmp"
 	"time"
@@ -70,20 +69,6 @@ func (s *SnmpService) FetchPorts() error {
 	s.portStats = initPorts(indexes, descriptions)
 
 	return nil
-}
-
-func ConnectSNMP() (*SnmpService, error) {
-	var snmpService *SnmpService
-	for {
-		snmpIP, snmpPort, snmpCommunity := services.GetSNMPInput()
-		snmpService = NewSnmpService(snmpIP, snmpPort, snmpCommunity)
-		err := snmpService.Connect()
-		if err != nil {
-			return nil, fmt.Errorf("Ошибка подключения к SNMP: %v", err)
-		}
-		break
-	}
-	return snmpService, nil
 }
 
 func (s *SnmpService) CloseConnection() {
