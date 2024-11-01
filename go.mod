@@ -7,6 +7,7 @@ require (
 	github.com/gizak/termui/v3 v3.1.0 // indirect
 	github.com/go-toast/toast v0.0.0-20190211030409-01e6764cf0a4 // indirect
 	github.com/gosnmp/gosnmp v1.38.0 // indirect
+	github.com/joho/godotenv v1.5.1 // indirect
 	github.com/kr/fs v0.1.0 // indirect
 	github.com/mattn/go-runewidth v0.0.9 // indirect
 	github.com/melbahja/goph v1.4.0 // indirect

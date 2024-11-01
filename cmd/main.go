@@ -6,27 +6,26 @@ import (
 	"Hackathon/internal/core/events"
 	"Hackathon/internal/core/events/listeners"
 	"Hackathon/internal/services"
-	"fmt"
+	"github.com/joho/godotenv"
+	"log"
 	"time"
 )
 
+func init() {
+	err := godotenv.Load("../.env")
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+}
+
 func main() {
-	sshService := services.ConnectSSH()
-	snmpService := services.ConnectSNMP()
-	defer snmpService.CloseConnection()
-	err := snmpService.Connect()
 	dispatcher := events.GetDispatcher()
 	dispatcher.Register("PortStatUpdated", &listeners.BandwidthCriticalListener{})
-	err = sshService.Connect()
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
 
-	pollingService := services.NewPollingService(snmpService)
+	sshService := services.ConnectSSH()
+	pollingService := services.NewPollingService(sshService)
 	pollingService.StartPolling(1 * time.Second)
 	exportService := services.NewExportService()
-
 	portController := controllers.NewPortController(pollingService)
 	exportController := controllers.NewExportController(exportService, pollingService)
 

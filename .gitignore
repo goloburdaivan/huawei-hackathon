@@ -1,1 +1,4 @@
 .idea/*
+last_login
+cmd/last_login
+.env

@@ -4,11 +4,16 @@ import (
 	"Hackathon/internal/core/events"
 	"Hackathon/internal/services"
 	"fmt"
+	"os"
 )
 
 type BandwidthCriticalListener struct{}
 
 func (n *BandwidthCriticalListener) Handle(e events.Event) {
+	if os.Getenv("NOTIFICATION_ON") == "false" {
+		return
+	}
+
 	if event, ok := e.(events.PortStatEvent); ok {
 		port := event.Port
 		if port.InBandwidthActual > port.InBandwidthUtil ||
