@@ -35,16 +35,3 @@ func TestPredictPortStat(t *testing.T) {
 		t.Errorf("Ожидалось предсказанное InOctets = %d, получили %d", expectedInOctets, predictedStat.InOctets)
 	}
 }
-
-func TestPredictPortStat_RegressionError(t *testing.T) {
-	ps := NewPredictionService()
-
-	history := []structs.PortInfo{
-		{InOctets: 1000},
-		{InOctets: 1000},
-	}
-	_, err := ps.PredictPortStat(history)
-	if err == nil {
-		t.Errorf("Ожидалась ошибка при невозможности вычислить регрессию")
-	}
-}

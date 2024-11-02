@@ -58,7 +58,12 @@ func TestExportPortStatsToCSV(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Не удалось открыть файл %s: %v", fileName, err)
 	}
-	defer file.Close()
+	defer func() {
+		file.Close()
+		if err := os.Remove(fileName); err != nil {
+			t.Errorf("Не удалось удалить файл %s: %v", fileName, err)
+		}
+	}()
 
 	reader := csv.NewReader(file)
 	records, err := reader.ReadAll()
@@ -98,8 +103,6 @@ func TestExportPortStatsToCSV(t *testing.T) {
 			t.Errorf("В столбце %d ожидалось '%s', получили '%s'", i, expected, dataRow[i])
 		}
 	}
-
-	os.Remove(fileName)
 }
 
 func TestExportPortStatsByIndex(t *testing.T) {
@@ -135,7 +138,12 @@ func TestExportPortStatsByIndex(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Не удалось открыть файл %s: %v", fileName, err)
 	}
-	defer file.Close()
+	defer func() {
+		file.Close()
+		if err := os.Remove(fileName); err != nil {
+			t.Errorf("Не удалось удалить файл %s: %v", fileName, err)
+		}
+	}()
 
 	reader := csv.NewReader(file)
 	records, err := reader.ReadAll()
@@ -164,8 +172,6 @@ func TestExportPortStatsByIndex(t *testing.T) {
 			t.Errorf("В столбце %d ожидалось '%s', получили '%s'", i, expected, dataRow[i])
 		}
 	}
-
-	os.Remove(fileName)
 
 	r, w, _ = os.Pipe()
 	os.Stdout = w
