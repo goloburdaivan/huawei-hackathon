@@ -28,6 +28,7 @@ func main() {
 	exportService := services.NewExportService()
 	portController := controllers.NewPortController(pollingService)
 	exportController := controllers.NewExportController(exportService, pollingService)
+	sshController := controllers.NewSSHController(sshService)
 
 	menu := cli.NewMenuBuilder("Главное меню").
 		AddAction("Показать информацию о всех портах", portController.ShowPortStats).
@@ -42,6 +43,8 @@ func main() {
 		EndSubMenu().
 		AddAction("Вывести информацию по определённому порту", portController.ShowPort).
 		AddAction("Прогнозировать статистику порта", portController.ShowPortPrediction).
+		EndSubMenu().
+		AddAction("Начать SSH CLI сессию", sshController.StartCliSession).
 		Build()
 
 	menu.Execute()

@@ -2,10 +2,12 @@ package ssh
 
 import (
 	"Hackathon/internal/core/structs"
+	"bufio"
 	"bytes"
 	"fmt"
 	"golang.org/x/crypto/ssh"
 	"io"
+	"os"
 	"strings"
 	"sync"
 	"time"
@@ -174,4 +176,26 @@ func (s *SshService) RunCommand(cmd string) (string, error) {
 	result := outputBuf.String()
 
 	return result, nil
+}
+
+func (s *SshService) StartCliSession() {
+	fmt.Println("Запуск CLI-сессии. Для выхода введите 'exit'.")
+
+	for {
+		fmt.Print("CLI> ")
+		reader := bufio.NewReader(os.Stdin)
+		command, _ := reader.ReadString('\n')
+		command = strings.TrimSpace(command)
+
+		if command == "exit" {
+			fmt.Println("Выход из CLI-сессии.")
+			break
+		}
+		output, err := s.RunCommand(command)
+		if err != nil {
+			fmt.Printf("Ошибка выполнения команды: %v\n", err)
+			continue
+		}
+		fmt.Println(output)
+	}
 }
