@@ -21,6 +21,7 @@ func init() {
 func main() {
 	dispatcher := events.GetDispatcher()
 	dispatcher.Register("PortStatUpdated", &listeners.BandwidthCriticalListener{})
+	dispatcher.Register("PortStatUpdated", &listeners.PortStatusListener{})
 
 	sshService := services.ConnectSSH()
 	pollingService := services.NewPollingService(sshService)
