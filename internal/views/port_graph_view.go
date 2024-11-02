@@ -44,14 +44,14 @@ func DisplayPortStatusGraph(portName string, portIndex int, pollingService *serv
 	clearConsole()
 }
 
-func DisplayPortOctetsGraph(portName string, portIndex int, octetType string, stopChannel chan bool, getOctets func() float64) {
+func DisplayPortGrowthGraph(portName string, portIndex int, growthType string, stopChannel chan bool, getGrowth func() float64) {
 	if err := ui.Init(); err != nil {
 		fmt.Printf("Failed to initialize termui: %v\n", err)
 		return
 	}
 	defer ui.Close()
 
-	baseTitle := fmt.Sprintf("Port %s (Index: %d) %s Over Time", portName, portIndex+1, octetType)
+	baseTitle := fmt.Sprintf("Port %s (Index: %d) %s Over Time", portName, portIndex+1, growthType)
 	plot := initializePlot(baseTitle, 20)
 	plot.Data[0] = append(plot.Data[0], 0)
 
@@ -65,8 +65,12 @@ func DisplayPortOctetsGraph(portName string, portIndex int, octetType string, st
 			select {
 			case <-ticker.C:
 				currentTime := time.Now().Format("15:04:05")
-				octets := getOctets() / 1024 / 1024
-				updateOctetsPlotData(plot, octets, baseTitle, currentTime)
+				growth := getGrowth()
+
+				if growthType == "InOctets" || growthType == "OutOctets" {
+					growth = growth / 1024 / 1024
+				}
+				updateOctetsPlotData(plot, growth, baseTitle, currentTime)
 				ui.Render(plot)
 
 			case e := <-uiEvents:

@@ -56,7 +56,7 @@ func (pc *PortController) ShowPortStatusGraph() {
 	fmt.Println("Возвращаемся в меню...")
 }
 
-func (pc *PortController) ShowPortOctetsGraph(octetType string) {
+func (pc *PortController) ShowPortGrowthGraph(growthType string) {
 	portStats := pc.pollingService.GetPortStats()
 	views.DisplayPortList(portStats)
 
@@ -69,21 +69,31 @@ func (pc *PortController) ShowPortOctetsGraph(octetType string) {
 
 	portName := portStats[portIndex].Name
 
-	var getOctetsFunc func() float64
-	if octetType == "InOctets" {
-		getOctetsFunc = func() float64 {
+	var getGrowthFunc func() float64
+
+	switch growthType {
+	case "InOctets":
+		getGrowthFunc = func() float64 {
 			return float64(pc.pollingService.GetPortStats()[portIndex].InOctets)
 		}
-	} else if octetType == "OutOctets" {
-		getOctetsFunc = func() float64 {
+	case "OutOctets":
+		getGrowthFunc = func() float64 {
 			return float64(pc.pollingService.GetPortStats()[portIndex].OutOctets)
 		}
-	} else {
-		fmt.Println("Неизвестный тип Octets. Используйте 'InOctets' или 'OutOctets'.")
+	case "InBandwidth":
+		getGrowthFunc = func() float64 {
+			return float64(pc.pollingService.GetPortStats()[portIndex].InBandwidthActual)
+		}
+	case "OutBandwidth":
+		getGrowthFunc = func() float64 {
+			return float64(pc.pollingService.GetPortStats()[portIndex].OutBandwidthActual)
+		}
+	default:
+		fmt.Println("Неизвестный тип. Используйте 'InOctets', 'OutOctets', 'InBandwidth' или 'OutBandwidth'.")
 		return
 	}
 
-	views.DisplayPortOctetsGraph(portName, portIndex, octetType, pc.stopChannel, getOctetsFunc)
+	views.DisplayPortGrowthGraph(portName, portIndex, growthType, pc.stopChannel, getGrowthFunc)
 	fmt.Println("Возвращаемся в меню...")
 }
 

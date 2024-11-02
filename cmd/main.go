@@ -39,8 +39,12 @@ func main() {
 		EndSubMenu().
 		AddAction("Показать график статусов для определённого порта", portController.ShowPortStatusGraph).
 		AddSubMenu("Графики InOctets/OutOctets для определённого порта").
-		AddAction("Показать график InOctets для определённого порта", func() { portController.ShowPortOctetsGraph("InOctets") }).
-		AddAction("Показать график OutOctets для определённого порта", func() { portController.ShowPortOctetsGraph("OutOctets") }).
+		AddAction("Показать график InOctets для определённого порта", func() { portController.ShowPortGrowthGraph("InOctets") }).
+		AddAction("Показать график OutOctets для определённого порта", func() { portController.ShowPortGrowthGraph("OutOctets") }).
+		EndSubMenu().
+		AddSubMenu("Графики InBandwidth/OutBandwidth для определённого порта").
+		AddAction("Показать график InBandwidth для определённого порта", func() { portController.ShowPortGrowthGraph("InBandwidth") }).
+		AddAction("Показать график OutBandwidth для определённого порта", func() { portController.ShowPortGrowthGraph("OutBandwidth") }).
 		EndSubMenu().
 		AddAction("Вывести информацию по определённому порту", portController.ShowPort).
 		AddAction("Прогнозировать статистику порта", portController.ShowPortPrediction).
