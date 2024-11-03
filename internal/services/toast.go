@@ -8,11 +8,11 @@ import (
 func SendToastNotification(message string) {
 	notification := toast.Notification{
 		AppID:   "Network stats",
-		Title:   "Сетевое уведомление",
+		Title:   "Network Notification",
 		Message: message,
 	}
 	err := notification.Push()
 	if err != nil {
-		fmt.Println("Ошибка отправки уведомления:", err)
+		fmt.Println("Error sending notification:", err)
 	}
 }

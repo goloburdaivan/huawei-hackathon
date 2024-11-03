@@ -24,7 +24,7 @@ func (ec *ExportController) ExportPortStats() {
 
 func (ec *ExportController) ExportPortStatsByPort() {
 	var portIndex int
-	fmt.Print("Введите название порта для экспорта: ")
+	fmt.Print("Enter the index of the port to export: ")
 	fmt.Scanln(&portIndex)
 
 	go func() {

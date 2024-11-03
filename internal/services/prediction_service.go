@@ -15,7 +15,7 @@ func NewPredictionService() *PredictionService {
 func (p *PredictionService) PredictPortStat(history []structs.PortInfo) (structs.PortInfo, error) {
 
 	if len(history) < 2 {
-		return structs.PortInfo{}, errors.New("Недостаточно данных для прогнозирования")
+		return structs.PortInfo{}, errors.New("Insufficient data for forecasting")
 	}
 
 	n := float64(len(history))
@@ -32,7 +32,7 @@ func (p *PredictionService) PredictPortStat(history []structs.PortInfo) (structs
 
 	denominator := n*sumX2 - sumX*sumX
 	if denominator == 0 {
-		return structs.PortInfo{}, errors.New("Ошибка вычисления регрессии")
+		return structs.PortInfo{}, errors.New("Error calculating regression")
 	}
 	a := (n*sumXY - sumX*sumY) / denominator
 	b := (sumY - a*sumX) / n

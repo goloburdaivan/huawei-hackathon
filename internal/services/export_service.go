@@ -21,7 +21,7 @@ func (es *ExportService) ExportPortStatsToCSV(portStats []structs.PortInfo) {
 	file, err := os.Create(fileName)
 
 	if err != nil {
-		fmt.Println("Не удалось создать файл:", err)
+		fmt.Println("Failed to create file:", err)
 		return
 	}
 	defer file.Close()
@@ -36,7 +36,7 @@ func (es *ExportService) ExportPortStatsToCSV(portStats []structs.PortInfo) {
 		"OutBroadcastPkts", "AdminStatus", "OperStatus",
 	})
 	if err != nil {
-		fmt.Println("Не удалось записать заголовки в файл:", err)
+		fmt.Println("Failed to write headers to file:", err)
 		return
 	}
 
@@ -60,20 +60,20 @@ func (es *ExportService) ExportPortStatsToCSV(portStats []structs.PortInfo) {
 		}
 		err := writer.Write(record)
 		if err != nil {
-			fmt.Println("Не удалось записать данные в файл:", err)
+			fmt.Println("Failed to write data to file:", err)
 			return
 		}
 	}
-	fmt.Println("Данные успешно экспортированы в \n", fileName)
+	fmt.Println("Data successfully exported to \n", fileName)
 }
 
 func (es *ExportService) ExportPortStatsByIndex(portStats []structs.PortInfo, portIndex int) {
 	if portIndex < 0 || portIndex >= len(portStats) {
-		fmt.Println("Порт с индексом", portIndex, "не найден")
+		fmt.Println("Port with index", portIndex, "not found")
 		return
 	}
 
 	portInfo := portStats[portIndex]
-	fmt.Println("Экспортируем данные для порта с индексом:", portIndex)
+	fmt.Println("Exporting data for port with index:", portIndex)
 	es.ExportPortStatsToCSV([]structs.PortInfo{portInfo})
 }

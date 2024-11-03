@@ -17,18 +17,18 @@ func NewConsoleMenu(portController *controllers.PortController) *ConsoleMenu {
 
 func (m *ConsoleMenu) DisplayMenu() {
 	for {
-		fmt.Println("1. Показать информацию о портах")
-		fmt.Println("2. Выйти")
+		fmt.Println("1. Show information about ports")
+		fmt.Println("2. Exit")
 		var choice int
 		fmt.Scanln(&choice)
 		switch choice {
 		case 1:
 			m.portController.ShowPortStats()
 		case 2:
-			fmt.Println("Завершение работы...")
+			fmt.Println("Exiting...")
 			return
 		default:
-			fmt.Println("Неверный выбор. Попробуйте снова.")
+			fmt.Println("Invalid choice. Please try again.")
 		}
 	}
 }

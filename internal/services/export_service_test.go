@@ -46,33 +46,33 @@ func TestExportPortStatsToCSV(t *testing.T) {
 
 	lines := strings.Split(strings.TrimSpace(output), "\n")
 	if len(lines) == 0 {
-		t.Fatalf("Не удалось получить вывод функции")
+		t.Fatalf("Failed to get function output")
 	}
 	fileName := strings.TrimSpace(lines[len(lines)-1])
 
 	if _, err := os.Stat(fileName); os.IsNotExist(err) {
-		t.Fatalf("Файл %s не существует", fileName)
+		t.Fatalf("File %s does not exist", fileName)
 	}
 
 	file, err := os.Open(fileName)
 	if err != nil {
-		t.Fatalf("Не удалось открыть файл %s: %v", fileName, err)
+		t.Fatalf("Failed to open file %s: %v", fileName, err)
 	}
 	defer func() {
 		file.Close()
 		if err := os.Remove(fileName); err != nil {
-			t.Errorf("Не удалось удалить файл %s: %v", fileName, err)
+			t.Errorf("Failed to delete file %s: %v", fileName, err)
 		}
 	}()
 
 	reader := csv.NewReader(file)
 	records, err := reader.ReadAll()
 	if err != nil {
-		t.Fatalf("Не удалось прочитать CSV-файл: %v", err)
+		t.Fatalf("Failed to read CSV file: %v", err)
 	}
 
 	if len(records) != 2 {
-		t.Errorf("Ожидалось 2 строки (заголовок + данные), получили %d", len(records))
+		t.Errorf("Expected 2 lines (header + data), got %d", len(records))
 	}
 
 	dataRow := records[1]
@@ -95,12 +95,12 @@ func TestExportPortStatsToCSV(t *testing.T) {
 	}
 
 	if len(dataRow) != len(expectedValues) {
-		t.Fatalf("Ожидалось %d столбцов, получили %d", len(expectedValues), len(dataRow))
+		t.Fatalf("Expected %d columns, got %d", len(expectedValues), len(dataRow))
 	}
 
 	for i, expected := range expectedValues {
 		if dataRow[i] != expected {
-			t.Errorf("В столбце %d ожидалось '%s', получили '%s'", i, expected, dataRow[i])
+			t.Errorf("In column %d expected '%s', got '%s'", i, expected, dataRow[i])
 		}
 	}
 }
@@ -126,33 +126,33 @@ func TestExportPortStatsByIndex(t *testing.T) {
 
 	lines := strings.Split(strings.TrimSpace(output), "\n")
 	if len(lines) == 0 {
-		t.Fatalf("Не удалось получить вывод функции")
+		t.Fatalf("Failed to get function output")
 	}
 	fileName := strings.TrimSpace(lines[len(lines)-1])
 
 	if _, err := os.Stat(fileName); os.IsNotExist(err) {
-		t.Fatalf("Файл %s не существует", fileName)
+		t.Fatalf("File %s does not exist", fileName)
 	}
 
 	file, err := os.Open(fileName)
 	if err != nil {
-		t.Fatalf("Не удалось открыть файл %s: %v", fileName, err)
+		t.Fatalf("Failed to open file %s: %v", fileName, err)
 	}
 	defer func() {
 		file.Close()
 		if err := os.Remove(fileName); err != nil {
-			t.Errorf("Не удалось удалить файл %s: %v", fileName, err)
+			t.Errorf("Failed to delete file %s: %v", fileName, err)
 		}
 	}()
 
 	reader := csv.NewReader(file)
 	records, err := reader.ReadAll()
 	if err != nil {
-		t.Fatalf("Не удалось прочитать CSV-файл: %v", err)
+		t.Fatalf("Failed to read CSV file: %v", err)
 	}
 
 	if len(records) != 2 {
-		t.Errorf("Ожидалось 2 строки (заголовок + данные), получили %d", len(records))
+		t.Errorf("Expected 2 lines (header + data), got %d", len(records))
 	}
 
 	dataRow := records[1]
@@ -164,12 +164,12 @@ func TestExportPortStatsByIndex(t *testing.T) {
 	}
 
 	if len(dataRow) != len(expectedValues) {
-		t.Fatalf("Ожидалось %d столбцов, получили %d", len(expectedValues), len(dataRow))
+		t.Fatalf("Expected %d columns, got %d", len(expectedValues), len(dataRow))
 	}
 
 	for i, expected := range expectedValues {
 		if dataRow[i] != expected {
-			t.Errorf("В столбце %d ожидалось '%s', получили '%s'", i, expected, dataRow[i])
+			t.Errorf("In column %d expected '%s', got '%s'", i, expected, dataRow[i])
 		}
 	}
 
@@ -183,7 +183,7 @@ func TestExportPortStatsByIndex(t *testing.T) {
 	outputBytes, _ = ioutil.ReadAll(r)
 	output = string(outputBytes)
 
-	if !strings.Contains(output, "Порт с индексом 5 не найден") {
-		t.Errorf("Ожидалось сообщение об ошибке для неверного индекса, получили '%s'", output)
+	if !strings.Contains(output, "Port with index 5 not found") {
+		t.Errorf("Expected error message for invalid index, got '%s'", output)
 	}
 }

@@ -61,7 +61,7 @@ func DisplayPortStats(portStats []structs.PortInfo) {
 	}
 
 	table.Render()
-	fmt.Println("\nОбновление через 1 секунду. Нажмите Enter, чтобы вернуться в меню.")
+	fmt.Println("\nUpdating in 1 second. Press Enter to return to the menu.")
 	time.Sleep(500 * time.Millisecond)
 }
 
@@ -101,6 +101,6 @@ func clearConsole() {
 		cmd.Stdout = os.Stdout
 		cmd.Run()
 	default:
-		fmt.Println("Не удалось очистить экран, неизвестная ОС.")
+		fmt.Println("Failed to clear the screen, unknown OS.")
 	}
 }

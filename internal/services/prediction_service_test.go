@@ -13,7 +13,7 @@ func TestPredictPortStat(t *testing.T) {
 	}
 	_, err := ps.PredictPortStat(historyInsufficient)
 	if err == nil {
-		t.Errorf("Ожидалась ошибка при недостаточном количестве данных")
+		t.Errorf("Expected an error for insufficient data")
 	}
 
 	history := []structs.PortInfo{
@@ -23,15 +23,15 @@ func TestPredictPortStat(t *testing.T) {
 	}
 	predictedStat, err := ps.PredictPortStat(history)
 	if err != nil {
-		t.Errorf("Не ожидалось ошибки, получили: %v", err)
+		t.Errorf("Did not expect an error, got: %v", err)
 	}
 
 	if predictedStat.InOctets == 0 {
-		t.Errorf("Предсказанное значение InOctets не должно быть нулевым")
+		t.Errorf("Predicted InOctets value should not be zero")
 	}
 
 	expectedInOctets := uint(2500)
 	if predictedStat.InOctets != expectedInOctets {
-		t.Errorf("Ожидалось предсказанное InOctets = %d, получили %d", expectedInOctets, predictedStat.InOctets)
+		t.Errorf("Expected predicted InOctets = %d, got %d", expectedInOctets, predictedStat.InOctets)
 	}
 }

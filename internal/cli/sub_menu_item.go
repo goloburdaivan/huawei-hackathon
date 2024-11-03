@@ -18,7 +18,7 @@ func (s *SubMenu) Execute() {
 			fmt.Printf("%d. ", i+1)
 			item.Display()
 		}
-		fmt.Printf("%d. Назад/Выйти\n", len(s.items)+1)
+		fmt.Printf("%d. Back/Exit\n", len(s.items)+1)
 
 		var choice int
 		fmt.Scanln(&choice)
@@ -30,7 +30,7 @@ func (s *SubMenu) Execute() {
 		if choice > 0 && choice <= len(s.items) {
 			s.items[choice-1].Execute()
 		} else {
-			fmt.Println("Неверный выбор. Попробуйте снова.")
+			fmt.Println("Invalid choice. Please try again.")
 		}
 	}
 }

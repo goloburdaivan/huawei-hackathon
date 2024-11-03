@@ -6,13 +6,13 @@ import (
 )
 
 func DisplayDeviceInfo(deviceStatus *structs.DeviceStatus) {
-	fmt.Println("Информация о статусе устройства:")
-	fmt.Printf("Слот: %d\n", deviceStatus.Slot)
-	fmt.Printf("Подслот: %s\n", deviceStatus.Sub)
-	fmt.Printf("Тип: %s\n", deviceStatus.Type)
-	fmt.Printf("Онлайн: %s\n", deviceStatus.Online)
-	fmt.Printf("Мощность: %s\n", deviceStatus.Power)
-	fmt.Printf("Регистрация: %s\n", deviceStatus.Register)
-	fmt.Printf("Статус: %s\n", deviceStatus.Status)
-	fmt.Printf("Роль: %s\n", deviceStatus.Role)
+	fmt.Println("Device Status Information:")
+	fmt.Printf("Slot: %d\n", deviceStatus.Slot)
+	fmt.Printf("Subslot: %s\n", deviceStatus.Sub)
+	fmt.Printf("Type: %s\n", deviceStatus.Type)
+	fmt.Printf("Online: %s\n", deviceStatus.Online)
+	fmt.Printf("Power: %s\n", deviceStatus.Power)
+	fmt.Printf("Registration: %s\n", deviceStatus.Register)
+	fmt.Printf("Status: %s\n", deviceStatus.Status)
+	fmt.Printf("Role: %s\n", deviceStatus.Role)
 }

@@ -20,7 +20,7 @@ func (n *BandwidthCriticalListener) Handle(e events.Event) {
 			port.OutBandwidthActual > port.OutBandwidthUtil &&
 				(port.OperStatus != "DOWN" || port.AdminStatus != "DOWN") {
 			message := fmt.Sprintf(
-				"ВНИМАНИЕ: Перегрузка на порте %d (%s).\nУтилизация входящей полосы: %.2f%%\nУтилизация исходящей полосы: %.2f%%",
+				"WARNING: Overload on port %d (%s).\nIncoming bandwidth utilization: %.2f%%\nOutgoing bandwidth utilization: %.2f%%",
 				port.Index, port.Name, port.InBandwidthActual, port.OutBandwidthActual,
 			)
 			services.SendToastNotification(message)

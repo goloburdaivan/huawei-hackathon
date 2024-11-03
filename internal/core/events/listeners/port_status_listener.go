@@ -23,7 +23,7 @@ func (n *PortStatusListener) Handle(e events.Event) {
 		currentStatus := event.Port.OperStatus
 
 		if lastStatus != currentStatus {
-			services.SendToastNotification(fmt.Sprintf("ВНИМАНИЕ: Порт %s сменил статус на %s", event.Port.Name, currentStatus))
+			services.SendToastNotification(fmt.Sprintf("WARNING: Port %s changed status to %s", event.Port.Name, currentStatus))
 		}
 	}
 }

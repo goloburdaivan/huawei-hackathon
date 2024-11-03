@@ -31,25 +31,25 @@ func main() {
 	exportController := controllers.NewExportController(exportService, pollingService)
 	sshController := controllers.NewSSHController(sshService)
 
-	menu := cli.NewMenuBuilder("Главное меню").
-		AddAction("Показать информацию о всех портах", portController.ShowPortStats).
-		AddSubMenu("Экспорт информации про порты").
-		AddAction("Экспортировать информацию о всех портах", exportController.ExportPortStats).
-		AddAction("Экспортировать информацию конкретного порта", exportController.ExportPortStatsByPort).
+	menu := cli.NewMenuBuilder("Main Menu").
+		AddAction("Show information about all ports", portController.ShowPortStats).
+		AddSubMenu("Export port information").
+		AddAction("Export information about all ports", exportController.ExportPortStats).
+		AddAction("Export information for a specific port", exportController.ExportPortStatsByPort).
 		EndSubMenu().
-		AddAction("Показать график статусов для определённого порта", portController.ShowPortStatusGraph).
-		AddSubMenu("Графики InOctets/OutOctets для определённого порта").
-		AddAction("Показать график InOctets для определённого порта", func() { portController.ShowPortGrowthGraph("InOctets") }).
-		AddAction("Показать график OutOctets для определённого порта", func() { portController.ShowPortGrowthGraph("OutOctets") }).
+		AddAction("Show status graph for a specific port", portController.ShowPortStatusGraph).
+		AddSubMenu("Graphs for InOctets/OutOctets for a specific port").
+		AddAction("Show InOctets graph for a specific port", func() { portController.ShowPortGrowthGraph("InOctets") }).
+		AddAction("Show OutOctets graph for a specific port", func() { portController.ShowPortGrowthGraph("OutOctets") }).
 		EndSubMenu().
-		AddSubMenu("Графики InBandwidth/OutBandwidth для определённого порта").
-		AddAction("Показать график InBandwidth для определённого порта", func() { portController.ShowPortGrowthGraph("InBandwidth") }).
-		AddAction("Показать график OutBandwidth для определённого порта", func() { portController.ShowPortGrowthGraph("OutBandwidth") }).
+		AddSubMenu("Graphs for InBandwidth/OutBandwidth for a specific port").
+		AddAction("Show InBandwidth graph for a specific port", func() { portController.ShowPortGrowthGraph("InBandwidth") }).
+		AddAction("Show OutBandwidth graph for a specific port", func() { portController.ShowPortGrowthGraph("OutBandwidth") }).
 		EndSubMenu().
-		AddAction("Вывести информацию по определённому порту", portController.ShowPort).
-		AddAction("Прогнозировать статистику порта", portController.ShowPortPrediction).
+		AddAction("Display information for a specific port", portController.ShowPort).
+		AddAction("Predict port statistics", portController.ShowPortPrediction).
 		EndSubMenu().
-		AddAction("Начать SSH CLI сессию", sshController.StartCliSession).
+		AddAction("Start SSH CLI session", sshController.StartCliSession).
 		Build()
 
 	menu.Execute()

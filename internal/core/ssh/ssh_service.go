@@ -179,7 +179,7 @@ func (s *SshService) RunCommand(cmd string) (string, error) {
 }
 
 func (s *SshService) StartCliSession() {
-	fmt.Println("Запуск CLI-сессии. Для выхода введите 'exit'.")
+	fmt.Println("Starting CLI session. Type 'exit' to quit.")
 
 	for {
 		fmt.Print("CLI> ")
@@ -188,12 +188,12 @@ func (s *SshService) StartCliSession() {
 		command = strings.TrimSpace(command)
 
 		if command == "exit" {
-			fmt.Println("Выход из CLI-сессии.")
+			fmt.Println("Exiting CLI session.")
 			break
 		}
 		output, err := s.RunCommand(command)
 		if err != nil {
-			fmt.Printf("Ошибка выполнения команды: %v\n", err)
+			fmt.Printf("Error executing command: %v\n", err)
 			continue
 		}
 		fmt.Println(output)

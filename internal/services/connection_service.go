@@ -21,7 +21,7 @@ func getSSHCredentials() (string, uint16, string, string) {
 	var sshPort uint16
 
 	if fileExists("last_login") {
-		fmt.Println("Использовать сохраненные данные из last_login? (y/n)")
+		fmt.Println("Use saved data from last_login? (y/n)")
 		var choice string
 		fmt.Scan(&choice)
 		if strings.ToLower(choice) == "y" {
@@ -43,8 +43,8 @@ func trySSHConnection(sshIP string, sshPort uint16, sshUser, sshPass string) *ss
 		sshService = ssh.NewSshService(sshIP, sshPort, sshUser, sshPass)
 		err := sshService.Connect()
 		if err != nil {
-			fmt.Println("Ошибка подключения к SSH:", err)
-			fmt.Println("Попробуйте ввести данные снова.")
+			fmt.Println("SSH connection error:", err)
+			fmt.Println("Please try entering the data again.")
 			sshIP, sshPort, sshUser, sshPass = getAndSaveSSHInput()
 			continue
 		}
@@ -68,7 +68,7 @@ func fileExists(filename string) bool {
 func readLastLogin() (string, uint16, string, string) {
 	file, err := os.Open("last_login")
 	if err != nil {
-		fmt.Println("Ошибка чтения файла last_login:", err)
+		fmt.Println("Error reading the last_login file:", err)
 		return "", 0, "", ""
 	}
 	defer file.Close()
@@ -80,13 +80,13 @@ func readLastLogin() (string, uint16, string, string) {
 	}
 
 	if len(data) < 4 {
-		fmt.Println("Недостаточно данных в last_login, введите вручную.")
+		fmt.Println("Not enough data in last_login, please enter manually.")
 		return "", 0, "", ""
 	}
 
 	port, err := strconv.ParseUint(data[1], 10, 16)
 	if err != nil {
-		fmt.Println("Ошибка преобразования порта из last_login:", err)
+		fmt.Println("Error converting port from last_login:", err)
 		return "", 0, "", ""
 	}
 
@@ -96,7 +96,7 @@ func readLastLogin() (string, uint16, string, string) {
 func saveLastLogin(sshIP string, sshPort uint16, sshUser, sshPass string) {
 	file, err := os.Create("last_login")
 	if err != nil {
-		fmt.Println("Ошибка создания файла last_login:", err)
+		fmt.Println("Error creating last_login file:", err)
 		return
 	}
 	defer file.Close()
@@ -116,8 +116,8 @@ func ConnectSNMP() *snmp.SnmpService {
 		snmpService = snmp.NewSnmpService(snmpIP, snmpPort, snmpCommunity)
 		err := snmpService.Connect()
 		if err != nil {
-			fmt.Println("Ошибка подключения к SNMP:", err)
-			fmt.Println("Попробуйте ввести данные снова.")
+			fmt.Println("Error connecting to SNMP:", err)
+			fmt.Println("Please try entering the data again.")
 			continue
 		}
 		break
